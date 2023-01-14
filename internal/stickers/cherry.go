@@ -1,0 +1,3 @@
+package stickers
+
+const NoddingCherry string = "CAACAgIAAxkBAAIBWWNWHwyXpEgSii-S_DIcqahc1O42AAL1CgACnrJ4SC1zkHmCP2TvKgQ"
