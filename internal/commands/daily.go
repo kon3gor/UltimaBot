@@ -1,12 +1,13 @@
 package commands
 
 import (
-	"dev/kon3gor/ultima/internal/ghclient"
 	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/ghclient"
 	"dev/kon3gor/ultima/internal/guard"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"time"
 
 	"strings"
@@ -24,7 +25,7 @@ func daily(context *context.Context) {
 
 func dailyGuarded(context *context.Context) {
 	daily := makeGithubRequest()
-	context.TextAnswer(daily)
+	context.MardownAnswer(daily)
 }
 
 type RequestBody struct {
@@ -54,7 +55,7 @@ func makeGithubRequest() string {
 		return fmt.Sprintf("error parsing bytes: %s", err)
 	}
 
-	return strings.ReplaceAll(string(bodyBytes), "\t", "    ")
+	return formatDaily(string(bodyBytes))
 }
 
 func getCurrentDate() (string, error) {
@@ -65,4 +66,32 @@ func getCurrentDate() (string, error) {
 
 	year, month, day := time.Now().In(tz).Date()
 	return fmt.Sprintf("%d-%02d-%02d", year, int(month), day), nil
+}
+
+func formatDaily(daily string) string {
+	re := regexp.MustCompile(`\t*- \[(x| )\]`)
+	entries := Flatten(re.FindAllStringIndex(daily, -1))
+	fmt.Println(entries)
+	for i, n := range entries {
+		rn := n + 5*i
+		daily = fmt.Sprintf("%s`%d.` %s", daily[:rn], i+1, daily[rn:])
+	}
+
+	daily = strings.ReplaceAll(daily, "- [ ]", "❌")
+	daily = strings.ReplaceAll(daily, "- [x]", "✅")
+	daily = strings.ReplaceAll(daily, "-", "\\-")
+	daily = strings.ReplaceAll(daily, "\t", "    ")
+
+	fmt.Printf("\n%s\n", daily)
+
+	return daily
+
+}
+
+func Flatten(indicies [][]int) []int {
+	var res []int
+	for _, s := range indicies {
+		res = append(res, s[0])
+	}
+	return res
 }

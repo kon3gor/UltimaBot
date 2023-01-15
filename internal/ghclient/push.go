@@ -78,6 +78,7 @@ func PushContent(client *http.Client, req PushRequest) error {
 	}
 	return nil
 }
+
 func getLastCommitSha(client *http.Client, req PushRequest) (string, error) {
 	headUrl := fmt.Sprintf("repos/%s/%s/git/refs/heads/%s", req.user, req.repo, req.branch)
 	response, err := get(client, headUrl)

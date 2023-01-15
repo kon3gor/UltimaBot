@@ -35,6 +35,13 @@ func (self *Context) TextAnswer(text string) {
 	self.sendChattable(msg)
 }
 
+func (self *Context) MardownAnswer(text string) {
+	chatId := self.ChatID
+	msg := tgbotapi.NewMessage(chatId, text)
+	msg.ParseMode = "MarkdownV2"
+	self.sendChattable(msg)
+}
+
 func (self *Context) StickerAnswer(sticker string) {
 	chatId := self.ChatID
 	msg := tgbotapi.NewSticker(chatId, tgbotapi.FileID(sticker))
