@@ -54,8 +54,8 @@ func (self *Context) sendChattable(msg tgbotapi.Chattable) {
 	}
 }
 
-func (self *Context) Guard(guard guard.GuardFunc) *guard.GuardErr {
-	if err := guard(self.RawUpdate); err != nil {
+func (self *Context) Guard(f guard.GuardFunc) *guard.GuardErr {
+	if err := f(self.RawUpdate); err != nil {
 		return err
 	}
 

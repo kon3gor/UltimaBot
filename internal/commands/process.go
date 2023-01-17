@@ -2,7 +2,9 @@ package commands
 
 import (
 	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/handlers/daily"
 	"dev/kon3gor/ultima/internal/stickers"
+	"strings"
 )
 
 func ProcessCommand(context *context.Context) {
@@ -13,8 +15,6 @@ func ProcessCommand(context *context.Context) {
 		randomName(context)
 	case spamCmd:
 		spam(context)
-	case dailyCmd:
-		daily(context)
 	case ideaCmd:
 		idea(context)
 	case chatIdCmd:
@@ -23,8 +23,20 @@ func ProcessCommand(context *context.Context) {
 		schedule(context)
 	case noteCmd:
 		note(context)
+	case daily.Cmd:
+		daily.ProcessCommand(context)
 	default:
 		unknown(context)
+	}
+}
+
+func getArgs(context *context.Context) []string {
+	msg := context.RawUpdate.Message.Text
+	parts := strings.Split(msg, " ")
+	if len(parts) <= 1 {
+		return make([]string, 0)
+	} else {
+		return parts[1:]
 	}
 }
 

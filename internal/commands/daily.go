@@ -15,8 +15,8 @@ import (
 
 const dailyCmd = "daily"
 
-func daily(context *context.Context) {
-	if err := context.Guard(guard.DefaultUserNameGuard); err != nil {
+func daily_t(context *context.Context) {
+	if err := context.Guard(guard.MyChat); err != nil {
 		context.TextAnswer(err.Msg)
 		return
 	}
