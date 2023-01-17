@@ -2,7 +2,9 @@ package daily
 
 import (
 	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/ghclient"
 	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 
@@ -45,6 +47,15 @@ func ProcessCallback(context *context.Context, data string) {
 		msg := tgbotapi.NewEditMessageText(context.ChatID, msgId, formatted)
 		msg.ParseMode = "MarkdownV2"
 		msg.ReplyMarkup = context.RawUpdate.CallbackQuery.Message.ReplyMarkup
+
+		currentDate, err := getCurrentDate()
+		if err != nil {
+			context.TextAnswer("Couldn't get current date")
+			return
+		}
+		client := &http.Client{}
+		req := ghclient.NewPersonalObsidianRequest(fmt.Sprintf("plans/daily/%s.md", currentDate), daily)
+		ghclient.PushContent(client, req)
 		context.CustomAnswer(msg)
 	}
 }

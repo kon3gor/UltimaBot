@@ -56,6 +56,10 @@ func NewMyPushRequest(repo string, branch string, path string, content string) P
 	return NewPushRequest("kon3gor", repo, branch, path, content)
 }
 
+func NewPersonalObsidianRequest(path string, content string) PushRequest {
+	return NewPushRequest("kon3gor", "PersonalObsidian", "main", path, content)
+}
+
 func PushContent(client *http.Client, req PushRequest) error {
 	lastCommitSha, err := getLastCommitSha(client, req)
 	if err != nil {
