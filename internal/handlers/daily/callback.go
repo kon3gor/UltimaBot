@@ -27,7 +27,7 @@ func ProcessCallback(context *context.Context, data string) {
 		//todo: mark task as completed smth here
 		daily := makeGithubRequest()
 		indicies := dailiyAsIndList(daily)
-		index, err := parseCheckArgs(entries)
+		index, _, err := parseCheckArgs(entries)
 		if err != nil {
 			panic(err)
 		}
@@ -40,7 +40,12 @@ func ProcessCallback(context *context.Context, data string) {
 		task := daily[indicies[index]:upper]
 		task = strings.ReplaceAll(task, "[ ]", "[x]")
 		daily = daily[:indicies[index]] + task + daily[upper:]
-		context.TextAnswer(fmt.Sprintf("New daily:\n%s", daily))
+		formatted := formatDaily(daily)
+		msgId := context.RawUpdate.CallbackQuery.Message.MessageID
+		msg := tgbotapi.NewEditMessageText(context.ChatID, msgId, formatted)
+		msg.ParseMode = "MarkdownV2"
+		msg.ReplyMarkup = context.RawUpdate.CallbackQuery.Message.ReplyMarkup
+		context.CustomAnswer(msg)
 	}
 }
 
@@ -62,18 +67,22 @@ func parseNavigateArgs(args []string) (int, int, error) {
 	return total, lower, nil
 }
 
-func parseCheckArgs(args []string) (int, error) {
-	if len(args) != 2 {
+func parseCheckArgs(args []string) (int, int, error) {
+	if len(args) != 3 {
 		//todo: genrate error here
-		return -1, nil
+		return -1, -1, nil
 	}
 
 	index, err := strconv.Atoi(args[1])
 	if err != nil {
-		return -1, err
+		return -1, -1, err
+	}
+	total, err := strconv.Atoi(args[2])
+	if err != nil {
+		return -1, -1, err
 	}
 
-	return index, nil
+	return index, total, nil
 }
 
 func createNextKeyboard(total, lower int) tgbotapi.InlineKeyboardMarkup {

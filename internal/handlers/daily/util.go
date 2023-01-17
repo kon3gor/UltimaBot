@@ -22,7 +22,7 @@ func createKeyBoardWithLowerBound(total, lower int) tgbotapi.InlineKeyboardMarku
 	row := make([]tgbotapi.InlineKeyboardButton, length)
 	for i := 0; i < length; i++ {
 		text := fmt.Sprint(lower + i + 1)
-		callback := fmt.Sprintf("daily:check,%d", i)
+		callback := fmt.Sprintf("daily:check,%d,%d", i, total)
 		row[i] = tgbotapi.NewInlineKeyboardButtonData(text, callback)
 	}
 	if total <= 5 {
