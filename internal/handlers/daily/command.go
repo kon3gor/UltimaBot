@@ -13,7 +13,7 @@ import (
 const Cmd = "daily"
 
 func ProcessCommand(context *context.Context) {
-	if err := context.Guard(guard.DefaultUserNameGuard); err != nil {
+	if err := context.Guard(guard.MyChat); err != nil {
 		context.TextAnswer(err.Msg)
 		return
 	}
@@ -21,7 +21,10 @@ func ProcessCommand(context *context.Context) {
 }
 
 func dailyGuarded(context *context.Context) {
-	raw_daily := makeGithubRequest()
+	raw_daily, err := makeGithubRequest()
+	if err != nil {
+		panic(err)
+	}
 	count := len(dailiyAsIndList(raw_daily))
 	daily := formatDaily(raw_daily)
 	msg := tgbotapi.NewMessage(context.ChatID, daily)
@@ -29,7 +32,6 @@ func dailyGuarded(context *context.Context) {
 	msg.ReplyMarkup = createKeyBoardWithLowerBound(count, 0)
 	context.CustomAnswer(msg)
 }
-
 
 func formatDaily(daily string) string {
 	entries := dailiyAsIndList(daily)

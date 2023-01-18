@@ -21,8 +21,9 @@ func createKeyBoardWithLowerBound(total, lower int) tgbotapi.InlineKeyboardMarku
 	length := upper - lower
 	row := make([]tgbotapi.InlineKeyboardButton, length)
 	for i := 0; i < length; i++ {
-		text := fmt.Sprint(lower + i + 1)
-		callback := fmt.Sprintf("daily:check,%d,%d", i, total)
+		realIndex := lower + i
+		text := fmt.Sprint(realIndex + 1)
+		callback := fmt.Sprintf("daily:check,%d", realIndex)
 		row[i] = tgbotapi.NewInlineKeyboardButtonData(text, callback)
 	}
 	if total <= 5 {
@@ -41,11 +42,11 @@ func createKeyBoardWithLowerBound(total, lower int) tgbotapi.InlineKeyboardMarku
 	return tgbotapi.NewInlineKeyboardMarkup(row, navbar)
 }
 
-func makeGithubRequest() string {
+func makeGithubRequest() (string, error) {
 	filePathTemplate := "plans/daily/%s.md"
 	currentDate, err := getCurrentDate()
 	if err != nil {
-		return fmt.Sprintf("Error while getting current date: %s", err)
+		return "", err
 	}
 	filePath := fmt.Sprintf(filePathTemplate, currentDate)
 	client := &http.Client{}
@@ -54,17 +55,17 @@ func makeGithubRequest() string {
 
 	res, err := client.Get(content[0].DownloadUrl)
 	if err != nil {
-		return fmt.Sprintf("Error while fetching donwload: %s", err)
+		return "", err
 	}
 
 	defer res.Body.Close()
 
 	bodyBytes, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return fmt.Sprintf("error parsing bytes: %s", err)
+		return "", err
 	}
 
-	return string(bodyBytes)
+	return string(bodyBytes), nil
 }
 
 func getCurrentDate() (string, error) {
