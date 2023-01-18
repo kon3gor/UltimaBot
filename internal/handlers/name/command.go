@@ -1,4 +1,4 @@
-package commands
+package name
 
 import (
 	"dev/kon3gor/ultima/internal/context"
@@ -6,9 +6,9 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-const randomeNameCmd string = "name"
+const Cmd string = "name"
 
-func randomName(context *context.Context) {
+func ProcessCommand(context *context.Context) {
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("Male", "name:male"),

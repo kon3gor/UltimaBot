@@ -1,4 +1,4 @@
-package commands
+package spam
 
 import (
 	"dev/kon3gor/ultima/internal/context"
@@ -8,11 +8,11 @@ import (
 	"time"
 )
 
-const spamCmd = "spam"
+const Cmd = "spam"
 
 var spammers = make(map[string]chan int8)
 
-func spam(context *context.Context) {
+func ProcessCommand(context *context.Context) {
 	t := context.RawUpdate.Message.Text
 	m := strings.SplitN(t, " ", 2)
 	textToSpam := m[1]

@@ -1,4 +1,4 @@
-package messages
+package processor
 
 import (
 	"dev/kon3gor/ultima/internal/context"

@@ -1,12 +1,12 @@
-package commands
+package chatid
 
 import (
 	"dev/kon3gor/ultima/internal/context"
 	"fmt"
 )
 
-const chatIdCmd = "chatId"
+const Cmd = "chatId"
 
-func chatId(context *context.Context) {
+func ProcessCommand(context *context.Context) {
 	context.TextAnswer(fmt.Sprint(context.ChatID))
 }

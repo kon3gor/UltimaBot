@@ -1,4 +1,4 @@
-package callbacks
+package name
 
 import (
 	"dev/kon3gor/ultima/internal/context"
@@ -8,9 +8,9 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-const randomNameCallback = "name"
+const Callback = "name"
 
-func randomName(data string, context *context.Context) {
+func ProcessCallback(context *context.Context, data string) {
 	rand.Seed(time.Now().UTC().UnixNano())
 	msgId := context.RawUpdate.CallbackQuery.Message.MessageID
 

@@ -1,8 +1,8 @@
-package commands
+package idea
 
 import (
-	"dev/kon3gor/ultima/internal/ghclient"
 	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/ghclient"
 	"dev/kon3gor/ultima/internal/guard"
 	"fmt"
 	"io/ioutil"
@@ -12,21 +12,22 @@ import (
 	"time"
 )
 
-const ideaCmd = "idea"
+const Cmd = "idea"
 
-func idea(context *context.Context) {
+func ProcessCommand(context *context.Context) {
 	if err := context.Guard(guard.DefaultUserNameGuard); err != nil {
 		context.TextAnswer(err.Msg)
 		return
 	}
-	ideaGuarded(context)
+	guarded(context)
 }
 
-func ideaGuarded(context *context.Context) {
+func guarded(context *context.Context) {
 	idea := selectIdea()
 	context.TextAnswer(idea)
 }
 
+// todo: need to do a little drill down here to get all ideas
 func selectIdea() string {
 	client := &http.Client{}
 	req := ghclient.NewMyContentRequest("PersonalObsidian", "ideas")
