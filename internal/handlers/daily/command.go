@@ -13,7 +13,7 @@ import (
 const Cmd = "daily"
 
 func ProcessCommand(context *context.Context) {
-	if err := context.Guard(guard.MyChat); err != nil {
+	if err := context.Guard(guard.DefaultUserNameGuard); err != nil {
 		context.TextAnswer(err.Msg)
 		return
 	}
