@@ -15,6 +15,9 @@ func checkDaily(context *context.Context, at int) {
 	dailyFromMsg := context.RawUpdate.CallbackQuery.Message.Text
 	daily := defomratDaily(dailyFromMsg)
 	markedDaily := markFinishedTask(daily, at)
+	if markedDaily == daily {
+		markedDaily = unmarkFinishedTask(daily, at)
+	}
 	formatted := formatDaily(markedDaily)
 	msgId := context.RawUpdate.CallbackQuery.Message.MessageID
 	msg := tgbotapi.NewEditMessageText(context.ChatID, msgId, formatted)
@@ -28,7 +31,15 @@ func checkDaily(context *context.Context, at int) {
 	}
 }
 
+func unmarkFinishedTask(daily string, at int) string {
+	return replaceInTask(at, daily, "[x]", "[ ]")
+}
+
 func markFinishedTask(daily string, at int) string {
+	return replaceInTask(at, daily, "[ ]", "[x]")
+}
+
+func replaceInTask(at int, daily, from, to string) string {
 	indicies := dailiyAsIndList(daily)
 	var upper int
 	if at+1 == len(indicies) {
@@ -37,7 +48,7 @@ func markFinishedTask(daily string, at int) string {
 		upper = indicies[at+1]
 	}
 	task := daily[indicies[at]:upper]
-	task = strings.ReplaceAll(task, "[ ]", "[x]")
+	task = strings.ReplaceAll(task, from, to)
 	return daily[:indicies[at]] + task + daily[upper:]
 }
 
