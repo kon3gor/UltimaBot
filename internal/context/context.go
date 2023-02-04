@@ -1,7 +1,9 @@
 package context
 
 import (
+	"dev/kon3gor/ultima/internal/fsm"
 	"dev/kon3gor/ultima/internal/guard"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -9,6 +11,7 @@ type Context struct {
 	UserName  string
 	ChatID    int64
 	RawUpdate tgbotapi.Update
+	State     *fsm.State
 
 	bot *tgbotapi.BotAPI
 }
@@ -16,13 +19,15 @@ type Context struct {
 func CreateFromCommand(update tgbotapi.Update, bot *tgbotapi.BotAPI) *Context {
 	chatId := update.Message.Chat.ID
 	username := update.Message.From.UserName
-	return &Context{username, chatId, update, bot}
+	state := fsm.StateStore.GetOrCreateState(chatId)
+	return &Context{username, chatId, update, state, bot}
 }
 
 func CreateFromCallback(update tgbotapi.Update, bot *tgbotapi.BotAPI) *Context {
 	chatId := update.CallbackQuery.Message.Chat.ID
 	username := update.CallbackQuery.Message.From.UserName
-	return &Context{username, chatId, update, bot}
+	state := fsm.StateStore.GetOrCreateState(chatId)
+	return &Context{username, chatId, update, state, bot}
 }
 
 func (self *Context) CustomAnswer(msg tgbotapi.Chattable) {
