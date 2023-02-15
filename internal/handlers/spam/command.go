@@ -3,6 +3,7 @@ package spam
 import (
 	"dev/kon3gor/ultima/internal/context"
 	"fmt"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"math/rand"
 	"strings"
 	"time"

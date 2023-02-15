@@ -12,6 +12,7 @@ import (
 const Cmd = "note"
 const titleLen = 12
 
+// todo: save notes somewhere else
 func ProcessCommand(context *context.Context) {
 	if err := context.Guard(guard.DefaultUserNameGuard); err != nil {
 		context.TextAnswer(err.Msg)

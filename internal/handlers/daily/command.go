@@ -4,6 +4,7 @@ import (
 	"dev/kon3gor/ultima/internal/context"
 	"dev/kon3gor/ultima/internal/guard"
 	"fmt"
+	"log"
 
 	"strings"
 
@@ -23,7 +24,9 @@ func ProcessCommand(context *context.Context) {
 func dailyGuarded(context *context.Context) {
 	raw_daily, err := makeGithubRequest()
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		context.TextAnswer("Smth went wrong")
+		return 
 	}
 	count := len(dailiyAsIndList(raw_daily))
 	daily := formatDaily(raw_daily)
