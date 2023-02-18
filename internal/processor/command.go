@@ -8,6 +8,7 @@ import (
 	"dev/kon3gor/ultima/internal/handlers/name"
 	"dev/kon3gor/ultima/internal/handlers/note"
 	"dev/kon3gor/ultima/internal/handlers/pokemon"
+	"dev/kon3gor/ultima/internal/handlers/reminder"
 	"dev/kon3gor/ultima/internal/handlers/schedule"
 	"dev/kon3gor/ultima/internal/handlers/spam"
 	"dev/kon3gor/ultima/internal/stickers"
@@ -34,6 +35,8 @@ func ProcessCommand(context *context.Context) {
 		daily.ProcessCommand(context)
 	case pokemon.Cmd:
 		pokemon.ProcessCommand(context)
+	case reminder.Cmd:
+		reminder.ProcessCommand(context)
 	default:
 		unknownCommand(context)
 	}
