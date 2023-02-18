@@ -27,6 +27,7 @@ func StartPolling() {
 	u.Timeout = 60
 
 	updates := bot.GetUpdatesChan(u)
+	bot.Debug = true
 
 	for update := range updates {
 		ProcessUpdate(update)
