@@ -3,9 +3,8 @@ package reminder
 import (
 	"dev/kon3gor/ultima/internal/context"
 	"dev/kon3gor/ultima/internal/guard"
-	"fmt"
-	"math/rand"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -23,9 +22,25 @@ func ProcessCommand(context *context.Context) {
 
 func guarded(context *context.Context) {
 	msg := context.RawUpdate.Message.Text
-	context.TextAnswer(msg)
-	//todo: make context start flow and put state into state store
-	context.State.StartFlow(Cmd)
+	args := strings.SplitN(msg, " ", 3)
+	subCommand := args[1]
+	processSubCommand(context, subCommand, args[1:])
+}
+
+func processSubCommand(context *context.Context, subCommand string, args []string) {
+	switch subCommand {
+	case "list":
+		context.TextAnswer("Not yet available")
+	case "new":
+		createNewTimer(context, args)
+	}
+
+}
+
+func createNewTimer(context *context.Context, args []string) {
+	parts := strings.SplitN(args[1], " ", 2)
+	duration := timeFromString(parts[0])
+	go ticker(context, parts[1], duration)
 }
 
 func timeFromString(strTime string) time.Duration {
@@ -44,27 +59,14 @@ func timeFromString(strTime string) time.Duration {
 		return time.Duration(num) * time.Hour
 	}
 
-	return 0 * time.Second
+	return time.Duration(0)
 }
 
-func ticker(context *context.Context, textToSpam string) {
-	ticker := time.NewTicker(5 * time.Second)
-	quit := make(chan int8)
-	id := fmt.Sprint(rand.Intn(100))
-	context.TextAnswer(id)
-	spammers[id] = quit
-	for {
-		select {
-		case <-ticker.C:
-			context.TextAnswer(textToSpam)
-		case <-quit:
-			context.TextAnswer("spam ended")
-			ticker.Stop()
-			return
-		}
-	}
+func ticker(context *context.Context, textToSpam string, dur time.Duration) {
+	timer := time.NewTimer(dur)
+	<-timer.C
+	context.TextAnswer(textToSpam)
 }
-
 
 func ProcessFlow(context *context.Context) {
 	switch context.State.CurrentStep() {
