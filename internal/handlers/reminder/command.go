@@ -25,26 +25,9 @@ func ProcessCommand(context *context.Context) {
 }
 
 func guarded(context *context.Context) {
-	msg := context.RawUpdate.Message.Text
-	args := strings.SplitN(msg, " ", 3)
-	subCommand := args[1]
-	processSubCommand(context, subCommand, args[1:])
-}
-
-func processSubCommand(context *context.Context, subCommand string, args []string) {
-	switch subCommand {
-	case "list":
-		if len(reminders) > 0 {
-			msg := tgbotapi.NewMessage(context.ChatID, "Currently running reminders")
-			msg.ReplyMarkup = listReminders()
-			context.CustomAnswer(msg)
-		} else {
-			context.TextAnswer("No reminders running")
-		}
-	case "new":
-		createNewTimer(context, args)
-	}
-
+	msg := tgbotapi.NewMessage(context.ChatID, "What would u like to do?")
+	msg.ReplyMarkup = createOrListKeyboard()
+	context.Destroyable(msg)
 }
 
 var reminders map[int]string = make(map[int]string, 0)
@@ -56,7 +39,7 @@ func listReminders() tgbotapi.InlineKeyboardMarkup {
 		button := tgbotapi.NewInlineKeyboardButtonData(v, data)
 		rows = append(rows, []tgbotapi.InlineKeyboardButton{button})
 	}
-	return tgbotapi.InlineKeyboardMarkup{InlineKeyboard: rows}
+	return newKeyboardWithBackButton("home", rows)
 }
 
 func createNewTimer(context *context.Context, args []string) {

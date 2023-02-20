@@ -3,6 +3,7 @@ package context
 import (
 	"dev/kon3gor/ultima/internal/fsm"
 	"dev/kon3gor/ultima/internal/guard"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -31,31 +32,47 @@ func CreateFromCallback(update tgbotapi.Update, bot *tgbotapi.BotAPI) *Context {
 }
 
 func (self *Context) CustomAnswer(msg tgbotapi.Chattable) {
-	self.sendChattable(msg)
+	self.sendChattable(msg, false)
 }
 
 func (self *Context) TextAnswer(text string) {
 	chatId := self.ChatID
 	msg := tgbotapi.NewMessage(chatId, text)
-	self.sendChattable(msg)
+	self.sendChattable(msg, false)
 }
 
 func (self *Context) MardownAnswer(text string) {
 	chatId := self.ChatID
 	msg := tgbotapi.NewMessage(chatId, text)
 	msg.ParseMode = "MarkdownV2"
-	self.sendChattable(msg)
+	self.sendChattable(msg, false)
+}
+
+func (self *Context) Destroyable(msg tgbotapi.Chattable) {
+	self.sendChattable(msg, true)
+}
+
+func (self *Context) deleteMessageAfter(chatId int64, messageId int, dur time.Duration) {
+	msg := tgbotapi.NewDeleteMessage(chatId, messageId)
+	timer := time.NewTimer(dur)
+	<-timer.C
+	self.sendChattable(msg, false)
 }
 
 func (self *Context) StickerAnswer(sticker string) {
 	chatId := self.ChatID
 	msg := tgbotapi.NewSticker(chatId, tgbotapi.FileID(sticker))
-	self.sendChattable(msg)
+	self.sendChattable(msg, false)
 }
 
-func (self *Context) sendChattable(msg tgbotapi.Chattable) {
-	if _, err := self.bot.Send(msg); err != nil {
+func (self *Context) sendChattable(msg tgbotapi.Chattable, destroyable bool) {
+	message, err := self.bot.Send(msg)
+	if err != nil {
 		panic(err)
+	}
+	
+	if destroyable {
+		go self.deleteMessageAfter(self.ChatID, message.MessageID, 5 * time.Second)
 	}
 }
 
