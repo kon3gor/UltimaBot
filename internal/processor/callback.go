@@ -4,6 +4,7 @@ import (
 	"dev/kon3gor/ultima/internal/context"
 	"dev/kon3gor/ultima/internal/handlers/daily"
 	"dev/kon3gor/ultima/internal/handlers/name"
+	"dev/kon3gor/ultima/internal/handlers/reminder"
 	"strings"
 )
 
@@ -15,6 +16,8 @@ func ProcessCallback(context *context.Context) {
 		name.ProcessCallback(context, args)
 	case daily.Callback:
 		daily.ProcessCallback(context, args)
+	case reminder.Callback:
+		reminder.ProcessCallback(context, args)
 	default:
 		unknownCallback(context)
 	}
