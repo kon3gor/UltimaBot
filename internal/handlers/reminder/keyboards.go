@@ -28,10 +28,10 @@ func createOrListKeyboard() tgbotapi.InlineKeyboardMarkup {
 func reminderTypeKeyboard() tgbotapi.InlineKeyboardMarkup {
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(periodicButtonText, "remind:navigate:home"),
+			tgbotapi.NewInlineKeyboardButtonData(periodicButtonText, "remind:create:periodic"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(singleTimeButtonText, "remind:navigate:home"),
+			tgbotapi.NewInlineKeyboardButtonData(singleTimeButtonText, "remind:create:once"),
 		),
 	)
 }
