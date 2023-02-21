@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
-	"strings"
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -27,7 +26,7 @@ func ProcessCommand(context *context.Context) {
 func guarded(context *context.Context) {
 	msg := tgbotapi.NewMessage(context.ChatID, "What would u like to do?")
 	msg.ReplyMarkup = createOrListKeyboard()
-	context.Destroyable(msg)
+	context.CustomAnswer(msg)
 }
 
 var reminders map[int]string = make(map[int]string, 0)
@@ -35,19 +34,11 @@ var reminders map[int]string = make(map[int]string, 0)
 func listReminders() tgbotapi.InlineKeyboardMarkup {
 	var rows [][]tgbotapi.InlineKeyboardButton
 	for id, v := range reminders {
-		data := fmt.Sprintf("remind:%d", id)
+		data := fmt.Sprintf("remind:delete:%d", id)
 		button := tgbotapi.NewInlineKeyboardButtonData(v, data)
 		rows = append(rows, []tgbotapi.InlineKeyboardButton{button})
 	}
 	return newKeyboardWithBackButton("home", rows)
-}
-
-func createNewTimer(context *context.Context, args []string) {
-	id := rand.Intn(1000)
-	parts := strings.SplitN(args[1], " ", 2)
-	duration := timeFromString(parts[0])
-	reminders[id] = parts[1][:10]
-	go ticker(context, parts[1], duration, id)
 }
 
 func timeFromString(strTime string) time.Duration {
@@ -69,20 +60,48 @@ func timeFromString(strTime string) time.Duration {
 	return time.Duration(0)
 }
 
-func ticker(context *context.Context, textToSpam string, dur time.Duration, id int) {
+func timer(context *context.Context, textToSpam string, dur time.Duration, id int) {
 	timer := time.NewTimer(dur)
 	<-timer.C
 	context.TextAnswer(textToSpam)
 	delete(reminders, id)
 }
 
+func ticker(context *context.Context, text string, dur time.Duration, id int) {
+	ticker := time.NewTicker(dur)
+	for range ticker.C {
+		if _, ok := reminders[id]; ok {
+			context.TextAnswer(text)
+		} else {
+			ticker.Stop()
+		}
+	}
+}
+
+var reminderDuration string
+var reminderMessage string
+
 func ProcessFlow(context *context.Context) {
 	switch context.State.CurrentStep() {
 	case 0:
-		context.TextAnswer("jajaja")
+		reminderDuration = context.RawUpdate.Message.Text
+		context.TextAnswer("Enter reminder message")
 		context.State.Next()
 	case 1:
-		context.TextAnswer("hahahah")
+		reminderMessage = context.RawUpdate.Message.Text
+		context.TextAnswer(fmt.Sprintf("%s %s %s", reminderType, reminderDuration, reminderMessage))
+		createReminder(context)
 		context.State.FinishFlow()
+	}
+}
+
+func createReminder(context *context.Context) {
+	duration := timeFromString(reminderDuration)
+	id := rand.Intn(1000)
+	reminders[id] = reminderMessage
+	if reminderType == "periodic" {
+		go ticker(context, reminderMessage, duration, id)
+	} else {
+		go timer(context, reminderMessage, duration, id)
 	}
 }

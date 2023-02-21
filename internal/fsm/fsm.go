@@ -1,18 +1,21 @@
 package fsm
 
-
 type State struct {
-	cmd string
+	cmd  string
 	step int
 }
-
 
 type stateStore map[int64]*State
 
 var StateStore = make(stateStore, 0)
 
 func (self stateStore) GetOrCreateState(chatId int64) *State {
-	return self[chatId]
+	if val, ok := self[chatId]; ok {
+		return val
+	} else {
+		self[chatId] = &State{}
+		return self[chatId]
+	}
 }
 
 func (state *State) StartFlow(cmd string) {
@@ -39,4 +42,3 @@ func (state *State) CurrentStep() int {
 func (state *State) CurrentCmd() string {
 	return state.cmd
 }
-

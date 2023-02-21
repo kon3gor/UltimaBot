@@ -2,6 +2,7 @@ package reminder
 
 import (
 	"dev/kon3gor/ultima/internal/context"
+	"strconv"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -15,8 +16,28 @@ func ProcessCallback(context *context.Context, args string) {
 	switch command {
 	case "navigate":
 		navigate(context, splittedArgs[1:])
+	case "create":
+		create(context, splittedArgs[1:])
+	case "delete":
+		deleteReminder(context, splittedArgs[1:])
 	}
 
+}
+
+var reminderType string
+
+func create(context *context.Context, args []string) {
+	reminderType = args[0]
+	changeText(context, "Enter duration")
+	context.State.StartFlow(Cmd)
+}
+
+// todo: check if reminder stil exists
+func deleteReminder(context *context.Context, args []string) {
+	id, _ := strconv.Atoi(args[0])
+	delete(reminders, id)
+	context.TextAnswer("Deleted!")
+	changeKeyboard(context, listReminders())
 }
 
 func navigate(context *context.Context, args []string) {
@@ -34,6 +55,12 @@ func navigate(context *context.Context, args []string) {
 func changeKeyboardAndText(context *context.Context, text string, keyboard tgbotapi.InlineKeyboardMarkup) {
 	msgId := context.RawUpdate.CallbackQuery.Message.MessageID
 	msg := tgbotapi.NewEditMessageTextAndMarkup(context.ChatID, msgId, text, keyboard)
+	context.CustomAnswer(msg)
+}
+
+func changeKeyboard(context *context.Context, keyboard tgbotapi.InlineKeyboardMarkup) {
+	msgId := context.RawUpdate.CallbackQuery.Message.MessageID
+	msg := tgbotapi.NewEditMessageReplyMarkup(context.ChatID, msgId, keyboard)
 	context.CustomAnswer(msg)
 }
 
