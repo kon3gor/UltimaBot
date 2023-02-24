@@ -52,5 +52,5 @@ jobs:
 
     - name: Restart bot
       run: |
-        ssh -i ~/.ssh/staging.key ultima './run'
+        ssh -vvv -i ~/.ssh/staging.key ultima './run'
 
