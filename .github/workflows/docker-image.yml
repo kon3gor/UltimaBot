@@ -37,10 +37,10 @@ jobs:
 
     - name: Restart bot
       uses: fifsky/ssh-action@master
-        with:
-          command: |
-            sh ./run
-          host: $HOST
-          user: kon3gor
-          key: ${{ secrets.PRIVATE_KEY}}
+      with:
+        command: |
+          sh ./run
+        host: $HOST
+        user: kon3gor
+        key: ${{ secrets.PRIVATE_KEY}}
 
