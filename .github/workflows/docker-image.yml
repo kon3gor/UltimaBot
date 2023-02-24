@@ -27,4 +27,4 @@ jobs:
         tags: ${{ steps.build-image.outputs.tags }}
         registry: cr.yandex/crp59r7snaughmoe7iqk
         username: oauth
-        password: ${{ secrets.REGISTRY_PASSWORD }
+        password: ${{ secrets.REGISTRY_PASSWORD }}
