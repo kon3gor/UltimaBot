@@ -1,7 +1,7 @@
 package reminder
 
 import (
-	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/guard"
 	"fmt"
 	"math/rand"
@@ -15,7 +15,7 @@ const Cmd = "remind"
 
 var spammers = make(map[string]chan int8)
 
-func ProcessCommand(context *context.Context) {
+func ProcessCommand(context *appcontext.Context) {
 	if err := context.Guard(guard.DefaultUserNameGuard); err != nil {
 		context.TextAnswer(err.Msg)
 		return
@@ -23,7 +23,7 @@ func ProcessCommand(context *context.Context) {
 	guarded(context)
 }
 
-func guarded(context *context.Context) {
+func guarded(context *appcontext.Context) {
 	msg := tgbotapi.NewMessage(context.ChatID, "What would u like to do?")
 	msg.ReplyMarkup = createOrListKeyboard()
 	context.CustomAnswer(msg)
@@ -60,14 +60,14 @@ func timeFromString(strTime string) time.Duration {
 	return time.Duration(0)
 }
 
-func timer(context *context.Context, textToSpam string, dur time.Duration, id int) {
+func timer(context *appcontext.Context, textToSpam string, dur time.Duration, id int) {
 	timer := time.NewTimer(dur)
 	<-timer.C
 	context.TextAnswer(textToSpam)
 	delete(reminders, id)
 }
 
-func ticker(context *context.Context, text string, dur time.Duration, id int) {
+func ticker(context *appcontext.Context, text string, dur time.Duration, id int) {
 	ticker := time.NewTicker(dur)
 	for range ticker.C {
 		if _, ok := reminders[id]; ok {
@@ -81,7 +81,7 @@ func ticker(context *context.Context, text string, dur time.Duration, id int) {
 var reminderDuration string
 var reminderMessage string
 
-func ProcessFlow(context *context.Context) {
+func ProcessFlow(context *appcontext.Context) {
 	switch context.State.CurrentStep() {
 	case 0:
 		reminderDuration = context.RawUpdate.Message.Text
@@ -94,7 +94,7 @@ func ProcessFlow(context *context.Context) {
 	}
 }
 
-func createReminder(context *context.Context) {
+func createReminder(context *appcontext.Context) {
 	duration := timeFromString(reminderDuration)
 	id := rand.Intn(1000)
 	reminders[id] = reminderMessage

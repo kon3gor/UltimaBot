@@ -1,4 +1,4 @@
-package context
+package appcontext
 
 import (
 	"dev/kon3gor/ultima/internal/fsm"

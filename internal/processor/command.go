@@ -1,7 +1,7 @@
 package processor
 
 import (
-	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/handlers/chatid"
 	"dev/kon3gor/ultima/internal/handlers/daily"
 	"dev/kon3gor/ultima/internal/handlers/idea"
@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-func ProcessCommand(context *context.Context) {
+func ProcessCommand(context *appcontext.Context) {
 	command := context.RawUpdate.Message.Command()
 
 	switch command {
@@ -42,7 +42,7 @@ func ProcessCommand(context *context.Context) {
 	}
 }
 
-func getArgs(context *context.Context) []string {
+func getArgs(context *appcontext.Context) []string {
 	msg := context.RawUpdate.Message.Text
 	parts := strings.Split(msg, " ")
 	if len(parts) <= 1 {
@@ -52,6 +52,6 @@ func getArgs(context *context.Context) []string {
 	}
 }
 
-func unknownCommand(context *context.Context) {
+func unknownCommand(context *appcontext.Context) {
 	context.StickerAnswer(stickers.QuestioningAnimeGitl)
 }

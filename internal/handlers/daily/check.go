@@ -1,7 +1,7 @@
 package daily
 
 import (
-	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/ghclient"
 	"fmt"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func checkDaily(context *context.Context, at int) {
+func checkDaily(context *appcontext.Context, at int) {
 	dailyFromMsg := context.RawUpdate.CallbackQuery.Message.Text
 	daily := defomratDaily(dailyFromMsg)
 	markedDaily := markFinishedTask(daily, at)

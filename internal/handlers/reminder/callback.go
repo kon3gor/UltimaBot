@@ -1,7 +1,7 @@
 package reminder
 
 import (
-	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/appcontext"
 	"strconv"
 	"strings"
 
@@ -10,7 +10,7 @@ import (
 
 const Callback = "remind"
 
-func ProcessCallback(context *context.Context, args string) {
+func ProcessCallback(context *appcontext.Context, args string) {
 	splittedArgs := strings.Split(args, ":")
 	command := splittedArgs[0]
 	switch command {
@@ -26,21 +26,21 @@ func ProcessCallback(context *context.Context, args string) {
 
 var reminderType string
 
-func create(context *context.Context, args []string) {
+func create(context *appcontext.Context, args []string) {
 	reminderType = args[0]
 	changeText(context, "Enter duration")
 	context.State.StartFlow(Cmd)
 }
 
 // todo: check if reminder stil exists
-func deleteReminder(context *context.Context, args []string) {
+func deleteReminder(context *appcontext.Context, args []string) {
 	id, _ := strconv.Atoi(args[0])
 	delete(reminders, id)
 	context.TextAnswer("Deleted!")
 	changeKeyboard(context, listReminders())
 }
 
-func navigate(context *context.Context, args []string) {
+func navigate(context *appcontext.Context, args []string) {
 	dest := args[0]
 	switch dest {
 	case "list":
@@ -52,19 +52,19 @@ func navigate(context *context.Context, args []string) {
 	}
 }
 
-func changeKeyboardAndText(context *context.Context, text string, keyboard tgbotapi.InlineKeyboardMarkup) {
+func changeKeyboardAndText(context *appcontext.Context, text string, keyboard tgbotapi.InlineKeyboardMarkup) {
 	msgId := context.RawUpdate.CallbackQuery.Message.MessageID
 	msg := tgbotapi.NewEditMessageTextAndMarkup(context.ChatID, msgId, text, keyboard)
 	context.CustomAnswer(msg)
 }
 
-func changeKeyboard(context *context.Context, keyboard tgbotapi.InlineKeyboardMarkup) {
+func changeKeyboard(context *appcontext.Context, keyboard tgbotapi.InlineKeyboardMarkup) {
 	msgId := context.RawUpdate.CallbackQuery.Message.MessageID
 	msg := tgbotapi.NewEditMessageReplyMarkup(context.ChatID, msgId, keyboard)
 	context.CustomAnswer(msg)
 }
 
-func changeText(context *context.Context, text string) {
+func changeText(context *appcontext.Context, text string) {
 	msgId := context.RawUpdate.CallbackQuery.Message.MessageID
 	textMsg := tgbotapi.NewEditMessageText(context.ChatID, msgId, text)
 	context.CustomAnswer(textMsg)

@@ -1,7 +1,7 @@
 package pokemon
 
 import (
-	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/appcontext"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -15,7 +15,7 @@ import (
 
 const Cmd = "pokemon"
 
-func ProcessCommand(context *context.Context) {
+func ProcessCommand(context *appcontext.Context) {
 	pokemon, err := getRandomPokemonInfo()
 	if err != nil {
 		context.TextAnswer("Some error occured")

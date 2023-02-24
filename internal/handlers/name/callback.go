@@ -1,7 +1,7 @@
 package name
 
 import (
-	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/appcontext"
 	"math/rand"
 	"time"
 
@@ -10,7 +10,7 @@ import (
 
 const Callback = "name"
 
-func ProcessCallback(context *context.Context, data string) {
+func ProcessCallback(context *appcontext.Context, data string) {
 	rand.Seed(time.Now().UTC().UnixNano())
 	msgId := context.RawUpdate.CallbackQuery.Message.MessageID
 

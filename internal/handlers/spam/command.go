@@ -1,7 +1,7 @@
 package spam
 
 import (
-	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/appcontext"
 	"fmt"
 	"math/rand"
 	"strings"
@@ -12,7 +12,7 @@ const Cmd = "spam"
 
 var spammers = make(map[string]chan int8)
 
-func ProcessCommand(context *context.Context) {
+func ProcessCommand(context *appcontext.Context) {
 	t := context.RawUpdate.Message.Text
 	m := strings.SplitN(t, " ", 2)
 	textToSpam := m[1]
@@ -25,7 +25,7 @@ func ProcessCommand(context *context.Context) {
 	}
 }
 
-func ticker(context *context.Context, textToSpam string) {
+func ticker(context *appcontext.Context, textToSpam string) {
 	ticker := time.NewTicker(5 * time.Second)
 	quit := make(chan int8)
 	id := fmt.Sprint(rand.Intn(100))
