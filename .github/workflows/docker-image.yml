@@ -34,14 +34,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Configure SSH
+      run: |
+        mkdir -p ~/.ssh/
+        echo "$SSH_KEY" > ~/.ssh/staging.key
+        chmod 600 ~/.ssh/staging.key
+        cat >>~/.ssh/config <<END
+        Host ultima
+          HostName $SSH_HOST
+          IdentityFile ~/.ssh/staging.key
+          StrictHostKeyChecking no
+        END
+      env:
+        SSH_KEY: ${{ secrets.PRIVATE_KEY }}
+        SSH_HOST: ${{ secrets.HOST }}
 
     - name: Restart bot
-      uses: fifsky/ssh-action@master
-      with:
-        command: |
-          sh ./run
-        host: ${{ secrets.HOST }}
-        user: kon3gor
-        key: ${{ secrets.PRIVATE_KEY }}
-        pass: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        ssh ultima './run'
 
