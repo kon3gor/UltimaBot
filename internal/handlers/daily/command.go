@@ -18,7 +18,8 @@ func ProcessCommand(context *appcontext.Context) {
 		context.TextAnswer(err.Msg)
 		return
 	}
-	dailyGuarded(context)
+	GetSunshineDaily(context)
+	//dailyGuarded(context)
 }
 
 func dailyGuarded(context *appcontext.Context) {

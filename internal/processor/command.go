@@ -9,6 +9,7 @@ import (
 	"dev/kon3gor/ultima/internal/handlers/note"
 	"dev/kon3gor/ultima/internal/handlers/pokemon"
 	"dev/kon3gor/ultima/internal/handlers/reminder"
+	"dev/kon3gor/ultima/internal/handlers/save"
 	"dev/kon3gor/ultima/internal/handlers/schedule"
 	"dev/kon3gor/ultima/internal/handlers/spam"
 	"dev/kon3gor/ultima/internal/stickers"
@@ -37,6 +38,8 @@ func ProcessCommand(context *appcontext.Context) {
 		pokemon.ProcessCommand(context)
 	case reminder.Cmd:
 		reminder.ProcessCommand(context)
+	case save.Cmd:
+		save.ProcessCommand(context)
 	default:
 		unknownCommand(context)
 	}

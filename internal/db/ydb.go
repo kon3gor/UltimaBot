@@ -6,13 +6,14 @@ import (
 
 	"github.com/ydb-platform/ydb-go-sdk/v3"
 	"github.com/ydb-platform/ydb-go-sdk/v3/table"
+	"github.com/ydb-platform/ydb-go-sdk/v3/table/result"
 	yc "github.com/ydb-platform/ydb-go-yc"
 )
 
 type YdbConnection struct {
 	connection ydb.Connection
 	cancelFunc context.CancelFunc
-	context    context.Context
+	Context    context.Context
 }
 
 type YdbQuery func(context.Context, table.Session) error
@@ -32,19 +33,28 @@ func Connect() (*YdbConnection, error) {
 	return &YdbConnection{
 		connection: db,
 		cancelFunc: cancel,
-		context:    ctx,
+		Context:    ctx,
 	}, nil
 }
 
-func (self *YdbConnection) Execute(query table.Operation) error {
-	queryErr := self.connection.Table().Do(self.context, query)
-	if queryErr != nil {
-		return queryErr
-	}
-	return nil
+type ResultConsumer func(*YdbConnection, result.Result)
+
+func (self *YdbConnection) Execute(query string, params *table.QueryParameters, consumer ResultConsumer) error {
+	queryErr := self.connection.Table().Do(self.Context, func(ctx context.Context, s table.Session) (err error) {
+		_, res, err := s.Execute(ctx, table.DefaultTxControl(), query, params)
+		if consumer != nil {
+			consumer(self, res)
+		}
+		if err != nil {
+			return err
+		}
+		defer res.Close()
+		return res.Err() // for driver retry if not nil
+	})
+	return queryErr
 }
 
 func (self *YdbConnection) Release() {
 	self.cancelFunc()
-	self.connection.Close(self.context)
+	self.connection.Close(self.Context)
 }
