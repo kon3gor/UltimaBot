@@ -40,7 +40,7 @@ jobs:
       with:
         command: |
           sh ./run
-        host: ${{ env.HOST }}
+        host: ${{ secrets.HOST }}
         user: kon3gor
         key: ${{ secrets.PRIVATE_KEY }}
 
