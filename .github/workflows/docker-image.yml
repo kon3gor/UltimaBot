@@ -28,3 +28,19 @@ jobs:
         registry: cr.yandex/crp59r7snaughmoe7iqk
         username: oauth
         password: ${{ secrets.REGISTRY_PASSWORD }}
+  restart:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Restart bot
+      uses: fifsky/ssh-action@master
+        with:
+          command: |
+            sh ./run
+          host: $HOST
+          user: kon3gor
+          key: ${{ secrets.PRIVATE_KEY}}
+
