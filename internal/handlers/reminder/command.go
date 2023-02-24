@@ -89,7 +89,6 @@ func ProcessFlow(context *context.Context) {
 		context.State.Next()
 	case 1:
 		reminderMessage = context.RawUpdate.Message.Text
-		context.TextAnswer(fmt.Sprintf("%s %s %s", reminderType, reminderDuration, reminderMessage))
 		createReminder(context)
 		context.State.FinishFlow()
 	}
