@@ -43,4 +43,5 @@ jobs:
         host: ${{ secrets.HOST }}
         user: kon3gor
         key: ${{ secrets.PRIVATE_KEY }}
+        pass: ${{ secrets.SSH_PASSWORD }}
 
