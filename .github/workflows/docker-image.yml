@@ -42,6 +42,7 @@ jobs:
         chmod 600 ~/.ssh/staging.key
         cat >>~/.ssh/config <<END
         Host ultima
+          User kon3gor
           HostName $SSH_HOST
           IdentityFile ~/.ssh/staging.key
           StrictHostKeyChecking no
