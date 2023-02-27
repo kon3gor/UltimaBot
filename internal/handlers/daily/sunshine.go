@@ -19,7 +19,7 @@ const sunshineDailyQuery = `
 declare $date as Date;
 select * from SunshineDaily
 where date = $date
-order by id;
+order by content;
 `
 
 var daily []string
