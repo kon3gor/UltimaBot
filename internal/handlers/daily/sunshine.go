@@ -39,6 +39,9 @@ func sunshineDaily(ctx *appcontext.Context) {
 
 	connection.Execute(sunshineDailyQuery, table.NewQueryParameters(date), readResults)
 	content := strings.Join(daily, "\n")
+	if content == "" {
+		content = "Nothing here"
+	}
 	msg := tgbotapi.NewMessage(ctx.ChatID, content)
 	msg.ParseMode = "MarkdownV2"
 	ctx.CustomAnswer(msg)
