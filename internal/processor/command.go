@@ -4,6 +4,7 @@ import (
 	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/handlers/chatid"
 	"dev/kon3gor/ultima/internal/handlers/daily"
+	"dev/kon3gor/ultima/internal/handlers/edit"
 	"dev/kon3gor/ultima/internal/handlers/idea"
 	"dev/kon3gor/ultima/internal/handlers/name"
 	"dev/kon3gor/ultima/internal/handlers/note"
@@ -40,6 +41,8 @@ func ProcessCommand(context *appcontext.Context) {
 		reminder.ProcessCommand(context)
 	case save.Cmd:
 		save.ProcessCommand(context)
+	case edit.Cmd:
+		edit.ProcessCommand(context)
 	default:
 		unknownCommand(context)
 	}

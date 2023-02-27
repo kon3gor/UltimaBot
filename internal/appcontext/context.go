@@ -13,6 +13,7 @@ type Context struct {
 	ChatID    int64
 	RawUpdate tgbotapi.Update
 	State     *fsm.State
+	Args      string
 
 	bot *tgbotapi.BotAPI
 }
@@ -21,14 +22,15 @@ func CreateFromCommand(update tgbotapi.Update, bot *tgbotapi.BotAPI) *Context {
 	chatId := update.Message.Chat.ID
 	username := update.Message.From.UserName
 	state := fsm.StateStore.GetOrCreateState(chatId)
-	return &Context{username, chatId, update, state, bot}
+	args := update.Message.CommandArguments()
+	return &Context{username, chatId, update, state, args, bot}
 }
 
 func CreateFromCallback(update tgbotapi.Update, bot *tgbotapi.BotAPI) *Context {
 	chatId := update.CallbackQuery.Message.Chat.ID
 	username := update.CallbackQuery.Message.From.UserName
 	state := fsm.StateStore.GetOrCreateState(chatId)
-	return &Context{username, chatId, update, state, bot}
+	return &Context{username, chatId, update, state, "", bot}
 }
 
 func (self *Context) CustomAnswer(msg tgbotapi.Chattable) {
@@ -70,9 +72,9 @@ func (self *Context) sendChattable(msg tgbotapi.Chattable, destroyable bool) {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	if destroyable {
-		go self.deleteMessageAfter(self.ChatID, message.MessageID, 5 * time.Second)
+		go self.deleteMessageAfter(self.ChatID, message.MessageID, 5*time.Second)
 	}
 }
 

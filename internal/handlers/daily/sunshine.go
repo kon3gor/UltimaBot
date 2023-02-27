@@ -18,12 +18,13 @@ import (
 const sunshineDailyQuery = `
 declare $date as Date;
 select * from SunshineDaily
-where date = $date;
+where date = $date
+order by id;
 `
 
 var daily []string
 
-func GetSunshineDaily(ctx *appcontext.Context) {
+func sunshineDaily(ctx *appcontext.Context) {
 	daily = make([]string, 0)
 	date, err := getCurrentDateAsParam()
 	if err != nil {

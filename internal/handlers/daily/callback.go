@@ -18,7 +18,7 @@ func ProcessCallback(context *appcontext.Context, data string) {
 			panic(err)
 		}
 
-		keyBoard := createKeyBoardWithLowerBound2(total, lower)
+		keyBoard := createKeyBoardWithLowerBound(total, lower)
 		msgId := context.RawUpdate.CallbackQuery.Message.MessageID
 		msg := tgbotapi.NewEditMessageReplyMarkup(context.ChatID, msgId, keyBoard)
 		context.CustomAnswer(msg)
