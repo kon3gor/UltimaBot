@@ -1,7 +1,7 @@
 package daily
 
 import (
-	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/appcontext"
 	"strconv"
 	"strings"
 
@@ -10,7 +10,7 @@ import (
 
 const Callback = "daily"
 
-func ProcessCallback(context *context.Context, data string) {
+func ProcessCallback(context *appcontext.Context, data string) {
 	entries := strings.Split(data, ",")
 	if entries[0] == "navigate" {
 		total, lower, err := parseNavigateArgs(entries)

@@ -1,7 +1,7 @@
 package daily
 
 import (
-	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/guard"
 	"fmt"
 	"log"
@@ -11,9 +11,14 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-const Cmd = "daily"
+const (
+	Cmd     = "daily"
+	eshendo = "eshendo"
+	zosuku  = "zosuku"
+)
 
-func ProcessCommand(context *context.Context) {
+// todo: Fix markdown issues
+func ProcessCommand(context *appcontext.Context) {
 	if err := context.Guard(guard.DefaultUserNameGuard); err != nil {
 		context.TextAnswer(err.Msg)
 		return
@@ -21,12 +26,25 @@ func ProcessCommand(context *context.Context) {
 	dailyGuarded(context)
 }
 
-func dailyGuarded(context *context.Context) {
+func dailyGuarded(context *appcontext.Context) {
+	args := strings.Split(context.Args, " ")
+	username := context.UserName
+	if len(args) > 0 && args[0] != "" {
+		username = args[0]
+	}
+	if username == eshendo {
+		mineDaily(context)
+	} else {
+		sunshineDaily(context)
+	}
+}
+
+func mineDaily(context *appcontext.Context) {
 	raw_daily, err := makeGithubRequest()
 	if err != nil {
 		log.Println(err)
 		context.TextAnswer("Smth went wrong")
-		return 
+		return
 	}
 	count := len(dailiyAsIndList(raw_daily))
 	daily := formatDaily(raw_daily)

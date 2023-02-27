@@ -1,7 +1,7 @@
 package telegram
 
 import (
-	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/processor"
 	"os"
 
@@ -36,18 +36,18 @@ func StartPolling() {
 
 func ProcessUpdate(update tgbotapi.Update) {
 	if update.Message != nil && update.Message.IsCommand() {
-		context := context.CreateFromCommand(update, bot)
+		context := appcontext.CreateFromCommand(update, bot)
 		processor.ProcessCommand(context)
 	} else if update.CallbackQuery != nil {
-		context := context.CreateFromCallback(update, bot)
+		context := appcontext.CreateFromCallback(update, bot)
 		processCallback(context)
 	} else if update.Message != nil {
-		context := context.CreateFromCommand(update, bot)
+		context := appcontext.CreateFromCommand(update, bot)
 		processor.Process(context)
 	}
 }
 
-func processCallback(context *context.Context) {
+func processCallback(context *appcontext.Context) {
 	callback := tgbotapi.NewCallback(context.RawUpdate.CallbackQuery.ID, context.RawUpdate.CallbackQuery.Data)
 	if _, err := bot.Request(callback); err != nil {
 		panic(err)

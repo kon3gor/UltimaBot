@@ -1,21 +1,23 @@
 package processor
 
 import (
-	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/handlers/chatid"
 	"dev/kon3gor/ultima/internal/handlers/daily"
+	"dev/kon3gor/ultima/internal/handlers/edit"
 	"dev/kon3gor/ultima/internal/handlers/idea"
 	"dev/kon3gor/ultima/internal/handlers/name"
 	"dev/kon3gor/ultima/internal/handlers/note"
 	"dev/kon3gor/ultima/internal/handlers/pokemon"
 	"dev/kon3gor/ultima/internal/handlers/reminder"
+	"dev/kon3gor/ultima/internal/handlers/save"
 	"dev/kon3gor/ultima/internal/handlers/schedule"
 	"dev/kon3gor/ultima/internal/handlers/spam"
 	"dev/kon3gor/ultima/internal/stickers"
 	"strings"
 )
 
-func ProcessCommand(context *context.Context) {
+func ProcessCommand(context *appcontext.Context) {
 	command := context.RawUpdate.Message.Command()
 
 	switch command {
@@ -37,12 +39,16 @@ func ProcessCommand(context *context.Context) {
 		pokemon.ProcessCommand(context)
 	case reminder.Cmd:
 		reminder.ProcessCommand(context)
+	case save.Cmd:
+		save.ProcessCommand(context)
+	case edit.Cmd:
+		edit.ProcessCommand(context)
 	default:
 		unknownCommand(context)
 	}
 }
 
-func getArgs(context *context.Context) []string {
+func getArgs(context *appcontext.Context) []string {
 	msg := context.RawUpdate.Message.Text
 	parts := strings.Split(msg, " ")
 	if len(parts) <= 1 {
@@ -52,6 +58,6 @@ func getArgs(context *context.Context) []string {
 	}
 }
 
-func unknownCommand(context *context.Context) {
+func unknownCommand(context *appcontext.Context) {
 	context.StickerAnswer(stickers.QuestioningAnimeGitl)
 }

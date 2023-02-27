@@ -1,12 +1,12 @@
 package processor
 
 import (
-	"dev/kon3gor/ultima/internal/context"
+	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/guard"
 	"dev/kon3gor/ultima/internal/handlers/reminder"
 )
 
-func Process(context *context.Context) {
+func Process(context *appcontext.Context) {
 	if context.RawUpdate.Message.Sticker != nil {
 		processSticker(context)
 	}
@@ -17,7 +17,7 @@ func Process(context *context.Context) {
 	}
 }
 
-func processSticker(context *context.Context) {
+func processSticker(context *appcontext.Context) {
 	if err := context.Guard(guard.DefaultUserNameGuard); err != nil {
 		return
 	}
