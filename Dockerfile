@@ -16,5 +16,8 @@ RUN mkdir -p "$APP_HOME"
 WORKDIR "$APP_HOME"
 
 COPY --from=builder "$APP_HOME"/ultima $APP_HOME
+COPY --from=builder "$APP_HOME"/sa.json $APP_HOME
+
+ENV SA_PATH "$APP_HOME/sa.json"
 
 CMD ["./ultima"]

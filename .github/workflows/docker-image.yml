@@ -10,6 +10,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Create an sa.json file
+      run: touch sa.json && echo $SA > sa.json
+      env:
+        SA: ${{ secrets.SA_JSON }}
     
     - name: Build a Docker image
       id: build-image
