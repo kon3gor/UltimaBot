@@ -18,7 +18,7 @@ const Cmd = "edit"
 
 func ProcessCommand(ctx *appcontext.Context) {
 	if err := ctx.Guard(guard.DefaultUserNameGuard); err != nil {
-		panic(err)
+		return
 	}
 	guarded(ctx)
 }
@@ -27,7 +27,8 @@ func guarded(ctx *appcontext.Context) {
 	ind, newc, _ := strings.Cut(ctx.RawUpdate.Message.CommandArguments(), " ")
 	index, err := strconv.Atoi(ind)
 	if err != nil {
-		panic(err)
+		ctx.SmthWentWrong(err)
+		return
 	}
 
 	updateSunshineDaily(ctx, index, newc)
@@ -55,7 +56,8 @@ update SunshineDaily set content = $content where id = $id;
 func updateSunshineDaily(ctx *appcontext.Context, index int, content string) {
 	connection, err := db.Connect()
 	if err != nil {
-		panic(err)
+		ctx.SmthWentWrong(err)
+		return
 	}
 	defer connection.Release()
 
@@ -63,7 +65,8 @@ func updateSunshineDaily(ctx *appcontext.Context, index int, content string) {
 	indParam := table.ValueParam("$ind", types.Int32Value(int32(index)))
 	dateParam, err := getCurrentDateAsParam()
 	if err != nil {
-		panic(err)
+		ctx.SmthWentWrong(err)
+		return
 	}
 	var q string
 	if content == "" {
@@ -73,7 +76,8 @@ func updateSunshineDaily(ctx *appcontext.Context, index int, content string) {
 	}
 	err = connection.Execute(q, table.NewQueryParameters(contentParam, indParam, dateParam), nil)
 	if err != nil {
-		panic(err)
+		ctx.SmthWentWrong(err)
+		return
 	}
 }
 

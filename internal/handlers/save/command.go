@@ -16,7 +16,7 @@ const Cmd = "save"
 
 func ProcessCommand(ctx *appcontext.Context) {
 	if err := ctx.Guard(guard.DefaultUserNameGuard); err != nil {
-		panic(err)
+		return
 	}
 	guarded(ctx)
 }
@@ -24,7 +24,8 @@ func ProcessCommand(ctx *appcontext.Context) {
 func guarded(ctx *appcontext.Context) {
 	connection, err := db.Connect()
 	if err != nil {
-		panic(err)
+		ctx.SmthWentWrong(err)
+		return
 	}
 
 	text := ctx.RawUpdate.Message.Text
@@ -33,7 +34,7 @@ func guarded(ctx *appcontext.Context) {
 	for _, daily := range dailies {
 		if err = saveDaily(connection, daily); err != nil {
 			connection.Release()
-			panic(err)
+			ctx.SmthWentWrong(err)
 		}
 	}
 	connection.Release()

@@ -3,6 +3,7 @@ package appcontext
 import (
 	"dev/kon3gor/ultima/internal/fsm"
 	"dev/kon3gor/ultima/internal/guard"
+	"log"
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -31,6 +32,11 @@ func CreateFromCallback(update tgbotapi.Update, bot *tgbotapi.BotAPI) *Context {
 	username := update.CallbackQuery.Message.From.UserName
 	state := fsm.StateStore.GetOrCreateState(chatId)
 	return &Context{username, chatId, update, state, "", bot}
+}
+
+func (self *Context) SmthWentWrong(err error) {
+	log.Println(err)
+	self.TextAnswer("Something went wrong")
 }
 
 func (self *Context) CustomAnswer(msg tgbotapi.Chattable) {

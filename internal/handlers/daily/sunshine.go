@@ -28,15 +28,16 @@ func sunshineDaily(ctx *appcontext.Context) {
 	daily = make([]string, 0)
 	date, err := getCurrentDateAsParam()
 	if err != nil {
-		panic(err)
+		ctx.SmthWentWrong(err)
+		return
 	}
 	connection, err := db.Connect()
 	if err != nil {
-		panic(err)
+		ctx.SmthWentWrong(err)
+		return
 	}
 
 	connection.Execute(sunshineDailyQuery, table.NewQueryParameters(date), readResults)
-	log.Println(daily)
 	content := strings.Join(daily, "\n")
 	msg := tgbotapi.NewMessage(ctx.ChatID, content)
 	msg.ParseMode = "MarkdownV2"
@@ -52,14 +53,14 @@ func readResults(connection *db.YdbConnection, res result.Result) {
 		var content string
 		err := res.ScanNamed(named.OptionalWithDefault("content", &content))
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 		daily = append(daily, fmt.Sprintf("`%d.` %s", i, content))
-		log.Println(daily)
 		i++
 	}
 }
 
+// todo: remove it from here, must be an utility
 func getCurrentDateAsParam() (table.ParameterOption, error) {
 	tz, err := time.LoadLocation("Europe/Moscow")
 	if err != nil {

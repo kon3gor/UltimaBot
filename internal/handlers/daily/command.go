@@ -17,6 +17,7 @@ const (
 	zosuku  = "zosuku"
 )
 
+// todo: Fix markdown issues
 func ProcessCommand(context *appcontext.Context) {
 	if err := context.Guard(guard.DefaultUserNameGuard); err != nil {
 		context.TextAnswer(err.Msg)
