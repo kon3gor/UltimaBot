@@ -76,7 +76,8 @@ func (self *Context) StickerAnswer(sticker string) {
 func (self *Context) sendChattable(msg tgbotapi.Chattable, destroyable bool) {
 	message, err := self.bot.Send(msg)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 
 	if destroyable {
