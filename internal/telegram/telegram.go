@@ -4,6 +4,7 @@ import (
 	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/processor"
 	"dev/kon3gor/ultima/internal/stickers"
+	"fmt"
 	"os"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -62,9 +63,18 @@ func processCallback(context *appcontext.Context) {
 func processInlineQuery(ctx *appcontext.Context) {
 	id := ctx.RawUpdate.InlineQuery.ID
 	results := make([]interface{}, 0)
-	results = append(results, tgbotapi.NewInlineQueryResultCachedSticker("0", stickers.DancingAnimeGirl, ""))
-	results = append(results, tgbotapi.NewInlineQueryResultCachedSticker("1", stickers.QuestioningAnimeGitl, ""))
-	results = append(results, tgbotapi.NewInlineQueryResultCachedSticker("2", stickers.NoddingCherry, "damn"))
+	stickers, err := stickers.GetStickers()
+	if err != nil {
+		return
+	}
+	for i, sticker := range stickers {
+		inlineSticker := tgbotapi.NewInlineQueryResultCachedSticker(
+			fmt.Sprint(i),
+			sticker,
+			"",
+		)
+		results = append(results, inlineSticker)
+	}
 	conf := tgbotapi.InlineConfig{
 		InlineQueryID: id,
 		IsPersonal:    true,
