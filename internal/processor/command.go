@@ -14,6 +14,8 @@ import (
 	"dev/kon3gor/ultima/internal/handlers/schedule"
 	"dev/kon3gor/ultima/internal/handlers/spam"
 	"dev/kon3gor/ultima/internal/stickers"
+	"dev/kon3gor/ultima/internal/util"
+	"log"
 	"strings"
 )
 
@@ -43,6 +45,11 @@ func ProcessCommand(context *appcontext.Context) {
 		save.ProcessCommand(context)
 	case edit.Cmd:
 		edit.ProcessCommand(context)
+	case "echo":
+		r := util.EscapeFakeMarkdown(context.Args)
+		log.Println(r)
+		log.Println(len(r))
+		context.MardownAnswer(r)
 	default:
 		unknownCommand(context)
 	}
