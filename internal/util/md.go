@@ -5,18 +5,8 @@ import (
 	"strings"
 )
 
-var runesToEscape = []string{
-	`\(`,
-	`\)`,
-	`\_`,
-	`\.`,
-	`\*`,
-	`\[`,
-	`\]`,
-}
-
 func EscapeFakeMarkdown(s string) string {
-	re := escapeRegexp()
+	re := fakeMdRegexp()
 	ind := re.FindAllStringIndex(s, -1)
 	beginInd := make([]int, 0, len(ind))
 	for _, v := range ind {
@@ -27,7 +17,7 @@ func EscapeFakeMarkdown(s string) string {
 	// todo: this shit will break immediatly when I try to use markdown is msges
 	for i, c := range s {
 		switch {
-		case curBegInd < len(beginInd) && i == beginInd[curBegInd] && isEscapeSymbol(c):
+		case curBegInd < len(beginInd) && i == beginInd[curBegInd] && isFakeMdSymbol(c):
 			b.WriteRune('\\')
 			b.WriteRune(c)
 		case curBegInd < len(beginInd) && i == beginInd[curBegInd]:
@@ -42,7 +32,17 @@ func EscapeFakeMarkdown(s string) string {
 	return b.String()
 }
 
-func isEscapeSymbol(r rune) bool {
+var runesToEscape = []string{
+	`\(`,
+	`\)`,
+	`\_`,
+	`\.`,
+	`\*`,
+	`\[`,
+	`\]`,
+}
+
+func isFakeMdSymbol(r rune) bool {
 	isLowerRune := r >= 'a' && r <= 'z'
 	isUpperRune := r >= 'A' && r <= 'Z'
 	isNumber := r >= '0' && r <= '9'
@@ -50,7 +50,7 @@ func isEscapeSymbol(r rune) bool {
 	return !isLowerRune && !isUpperRune && !isNumber && !isWhitespacee
 }
 
-func escapeRegexp() *regexp.Regexp {
+func fakeMdRegexp() *regexp.Regexp {
 	builder := strings.Builder{}
 	builder.WriteString(`(^|[a-zA-Z0-9\s])(`)
 	for _, r := range runesToEscape[1:] {

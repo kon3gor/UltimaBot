@@ -3,6 +3,7 @@ package daily
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/guard"
+	"dev/kon3gor/ultima/internal/util"
 	"fmt"
 	"log"
 
@@ -17,7 +18,6 @@ const (
 	zosuku  = "zosuku"
 )
 
-// todo: Fix markdown issues
 func ProcessCommand(context *appcontext.Context) {
 	if err := context.Guard(guard.DefaultUserNameGuard); err != nil {
 		context.TextAnswer(err.Msg)
@@ -47,7 +47,7 @@ func mineDaily(context *appcontext.Context) {
 		return
 	}
 	count := len(dailiyAsIndList(raw_daily))
-	daily := formatDaily(raw_daily)
+	daily := util.EscapeFakeMarkdown(formatDaily(raw_daily))
 	msg := tgbotapi.NewMessage(context.ChatID, daily)
 	msg.ParseMode = "MarkdownV2"
 	msg.ReplyMarkup = createKeyBoardWithLowerBound(count, 0)
