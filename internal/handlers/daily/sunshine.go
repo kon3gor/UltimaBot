@@ -3,6 +3,7 @@ package daily
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/db"
+	"dev/kon3gor/ultima/internal/util"
 	"fmt"
 	"log"
 	"strings"
@@ -42,6 +43,7 @@ func sunshineDaily(ctx *appcontext.Context) {
 	if content == "" {
 		content = "Nothing here"
 	}
+	content = util.EscapeFakeMarkdown(content)
 	msg := tgbotapi.NewMessage(ctx.ChatID, content)
 	msg.ParseMode = "MarkdownV2"
 	ctx.CustomAnswer(msg)

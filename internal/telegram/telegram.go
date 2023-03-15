@@ -3,6 +3,8 @@ package telegram
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/processor"
+	"dev/kon3gor/ultima/internal/stickers"
+	"fmt"
 	"os"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -44,6 +46,9 @@ func ProcessUpdate(update tgbotapi.Update) {
 	} else if update.Message != nil {
 		context := appcontext.CreateFromCommand(update, bot)
 		processor.Process(context)
+	} else if update.InlineQuery != nil {
+		context := appcontext.CreateFromInlineQuery(update, bot)
+		processInlineQuery(context)
 	}
 }
 
@@ -53,4 +58,30 @@ func processCallback(context *appcontext.Context) {
 		panic(err)
 	}
 	processor.ProcessCallback(context)
+}
+
+func processInlineQuery(ctx *appcontext.Context) {
+	id := ctx.RawUpdate.InlineQuery.ID
+	results := make([]interface{}, 0)
+	stickers, err := stickers.GetStickers()
+	if err != nil {
+		return
+	}
+	for i, sticker := range stickers {
+		inlineSticker := tgbotapi.NewInlineQueryResultCachedSticker(
+			fmt.Sprint(i),
+			sticker,
+			"",
+		)
+		results = append(results, inlineSticker)
+	}
+	conf := tgbotapi.InlineConfig{
+		InlineQueryID: id,
+		IsPersonal:    true,
+		CacheTime:     0,
+		Results:       results,
+	}
+	if _, err := bot.Request(conf); err != nil {
+		panic(err)
+	}
 }

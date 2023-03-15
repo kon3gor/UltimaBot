@@ -34,6 +34,11 @@ func CreateFromCallback(update tgbotapi.Update, bot *tgbotapi.BotAPI) *Context {
 	return &Context{username, chatId, update, state, "", bot}
 }
 
+func CreateFromInlineQuery(update tgbotapi.Update, bot *tgbotapi.BotAPI) *Context {
+	username := update.InlineQuery.From.UserName
+	return &Context{username, -1, update, nil, "", bot}
+}
+
 func (self *Context) SmthWentWrong(err error) {
 	log.Println(err)
 	self.TextAnswer("Something went wrong")
