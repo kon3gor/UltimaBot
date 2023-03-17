@@ -21,7 +21,7 @@ func GetDateAsString(shift int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	t.Add(oneDay * time.Duration(shift))
+	t = t.Add(oneDay * time.Duration(shift))
 	year, month, day := t.Date()
 	return fmt.Sprintf("%d-%02d-%02d", year, int(month), day), nil
 }

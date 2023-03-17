@@ -4,7 +4,7 @@ import (
 	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/db"
 	"dev/kon3gor/ultima/internal/guard"
-	"dev/kon3gor/ultima/internal/util"
+	"strconv"
 	"strings"
 	"time"
 
@@ -32,12 +32,17 @@ func guarded(ctx *appcontext.Context) {
 	text := ctx.RawUpdate.Message.Text
 	_, solid, _ := strings.Cut(text, " ")
 	dailies := strings.Split(solid, "\n")
-	for _, daily := range dailies {
-		if err = saveDaily(connection, daily); err != nil {
-			connection.Release()
-			ctx.SmthWentWrong(err)
-		}
+	shift, err := strconv.Atoi(dailies[0])
+	if err != nil {
+		panic(err)
 	}
+	saveMyDaily(ctx, dailies[1:], shift)
+	//	for _, daily := range dailies {
+	//		if err = saveDaily(connection, daily); err != nil {
+	//			connection.Release()
+	//			ctx.SmthWentWrong(err)
+	//		}
+	//	}
 	connection.Release()
 }
 
@@ -73,9 +78,11 @@ func generateId() (table.ParameterOption, error) {
 }
 
 func getCurrentDate() (table.ParameterOption, error) {
-	date, err := util.GetCurrentDate()
+	tz, err := time.LoadLocation("Europe/Moscow")
 	if err != nil {
 		return nil, err
 	}
+
+	date := time.Now().In(tz).UnixMilli() / 86400000
 	return table.ValueParam("$date", types.DateValue(uint32(date))), nil
 }
