@@ -4,6 +4,7 @@ import (
 	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/db"
 	"dev/kon3gor/ultima/internal/guard"
+	"dev/kon3gor/ultima/internal/util"
 	"strings"
 	"time"
 
@@ -72,11 +73,9 @@ func generateId() (table.ParameterOption, error) {
 }
 
 func getCurrentDate() (table.ParameterOption, error) {
-	tz, err := time.LoadLocation("Europe/Moscow")
+	date, err := util.GetCurrentDate()
 	if err != nil {
 		return nil, err
 	}
-
-	date := time.Now().In(tz).UnixMilli() / 86400000
 	return table.ValueParam("$date", types.DateValue(uint32(date))), nil
 }
