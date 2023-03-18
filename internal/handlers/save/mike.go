@@ -5,7 +5,6 @@ import (
 	"dev/kon3gor/ultima/internal/ghclient"
 	"dev/kon3gor/ultima/internal/util"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strings"
 )
@@ -26,6 +25,7 @@ func saveMyDaily(ctx *appcontext.Context, dailies []string, shift int) {
 	ghclient.PushContent(http.DefaultClient, req)
 }
 
+// todo: I can put it in the ghclient i guess
 func getExistingFutureDaily(shift int) (string, error) {
 	filePathTemplate := "plans/daily/%s.md"
 	currentDate, err := util.GetDateAsString(shift)
@@ -35,21 +35,7 @@ func getExistingFutureDaily(shift int) (string, error) {
 	filePath := fmt.Sprintf(filePathTemplate, currentDate)
 	client := &http.Client{}
 	req := ghclient.NewMyContentRequest("PersonalObsidian", filePath)
-	content, _ := ghclient.GetContent(client, req)
-
-	res, err := client.Get(content[0].DownloadUrl)
-	if err != nil {
-		return "", err
-	}
-
-	defer res.Body.Close()
-
-	bodyBytes, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return "", err
-	}
-
-	return string(bodyBytes), nil
+	return ghclient.GetFile(client, req)
 }
 
 func formatMyDailies(dailies []string) {
