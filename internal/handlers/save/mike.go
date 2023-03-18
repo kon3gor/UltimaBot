@@ -36,10 +36,12 @@ func getExistingFutureDaily(shift int) (string, error) {
 
 func formatMyDailies(dailies []string) string {
 	r := strings.Builder{}
-	for _, v := range dailies {
+	for _, v := range dailies[:len(dailies)-1] {
 		r.WriteString("- [ ] ")
 		r.WriteString(v)
 		r.WriteRune('\n')
 	}
+	r.WriteString("- [ ] ")
+	r.WriteString(dailies[len(dailies)-1])
 	return r.String()
 }

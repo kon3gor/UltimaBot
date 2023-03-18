@@ -27,14 +27,15 @@ func guarded(ctx *appcontext.Context) {
 	_, solid, _ := strings.Cut(text, " ")
 	dailies := strings.Split(solid, "\n")
 	shift, err := strconv.Atoi(dailies[0])
+	s := 1
 	if err != nil {
-		panic(err)
+		s = 0
 	}
 
 	if ctx.UserName == "zosuku" {
-		sunhineSave(ctx, dailies[1:], shift)
+		sunhineSave(ctx, dailies[s:], shift)
 	} else if ctx.UserName == "eshendo" {
-		saveMyDaily(ctx, dailies[1:], shift)
+		saveMyDaily(ctx, dailies[s:], shift)
 	}
 }
 
