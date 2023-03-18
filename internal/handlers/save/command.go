@@ -32,7 +32,7 @@ func guarded(ctx *appcontext.Context) {
 	}
 
 	if ctx.UserName == "zosuku" {
-		sunhineSave(ctx, dailies, shift)
+		sunhineSave(ctx, dailies[1:], shift)
 	} else if ctx.UserName == "eshendo" {
 		saveMyDaily(ctx, dailies[1:], shift)
 	}
