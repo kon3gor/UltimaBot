@@ -5,16 +5,17 @@ import (
 	"time"
 )
 
-func GetCurrentDateAsMillis() (int64, error) {
+const oneDay time.Duration = 24 * time.Hour
+
+func GetCurrentDateAsMillis(shift int) (int64, error) {
 	t, err := getCurrentTime()
 	if err != nil {
 		return -1, err
 	}
+	t = t.Add(oneDay * time.Duration(shift))
 	date := t.UnixMilli() / 86400000
 	return date, nil
 }
-
-const oneDay time.Duration = 24 * time.Hour
 
 func GetDateAsString(shift int) (string, error) {
 	t, err := getCurrentTime()
