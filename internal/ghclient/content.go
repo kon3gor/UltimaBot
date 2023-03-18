@@ -3,8 +3,6 @@ package ghclient
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"strings"
 )
 
 type FileContent struct {
@@ -15,8 +13,13 @@ type ContentRequest struct {
 	path string
 }
 
-func GetContent(client *http.Client, req ContentRequest) ([]FileContent, error) {
-	res, err := get(client, req.path)
+func NewContentRequest(user string, repo string, path string) ContentRequest {
+	fullPath := fmt.Sprintf("repos/%s/%s/contents/%s", user, repo, path)
+	return ContentRequest{fullPath}
+}
+
+func (c *GithubClient) GetContent(req ContentRequest) ([]FileContent, error) {
+	res, err := c.get(req.path)
 	defer res.Body.Close()
 
 	if req.isFile() {
@@ -34,19 +37,17 @@ func GetContent(client *http.Client, req ContentRequest) ([]FileContent, error) 
 	}
 }
 
-func NewMyContentRequest(repo string, path string) ContentRequest {
-	return NewContentRequest("kon3gor", repo, path)
-}
-
-func NewContentRequest(user string, repo string, path string) ContentRequest {
-	fullPath := fmt.Sprintf("repos/%s/%s/contents/%s", user, repo, path)
-	return ContentRequest{fullPath}
-}
-
 // If last segment of the provided path has a period, then it is probably a file.
 // Also we should check last period index, because hidden files and dirs start with a period.
 func (self ContentRequest) isFile() bool {
-	parts := strings.Split(self.path, "/")
-	filename := parts[len(parts)-1]
-	return strings.Contains(filename, ".") && strings.LastIndex(filename, ".") != 0
+	p := self.path
+	for i := len(p) - 1; i > 0; i-- {
+		if p[i] == '/' {
+			break
+		}
+		if p[i] == '.' && p[i-1] != '/' {
+			return true
+		}
+	}
+	return false
 }

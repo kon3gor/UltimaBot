@@ -49,11 +49,10 @@ func makeGithubRequest() (string, error) {
 		return "", err
 	}
 	filePath := fmt.Sprintf(filePathTemplate, currentDate)
-	client := &http.Client{}
 	req := ghclient.NewMyContentRequest("PersonalObsidian", filePath)
-	content, _ := ghclient.GetContent(client, req)
+	content, _ := ghclient.GetContent(req)
 
-	res, err := client.Get(content[0].DownloadUrl)
+	res, err := http.Get(content[0].DownloadUrl)
 	if err != nil {
 		return "", err
 	}

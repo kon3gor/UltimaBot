@@ -5,7 +5,6 @@ import (
 	"dev/kon3gor/ultima/internal/ghclient"
 	"dev/kon3gor/ultima/internal/guard"
 	"fmt"
-	"net/http"
 	"strings"
 )
 
@@ -29,9 +28,8 @@ func guarded(context *appcontext.Context) {
 	}
 	title := note[:titleLen-1]
 	path := fmt.Sprintf("notes/junk/%s.md", title)
-	pushReq := ghclient.NewMyPushRequest("PersonalObsidian", "main", path, note)
-	client := &http.Client{}
-	if err := ghclient.PushContent(client, pushReq); err != nil {
+	pushReq := ghclient.NewPersonalObsidianRequest(path, note)
+	if err := ghclient.PushContent(pushReq); err != nil {
 		context.TextAnswer("Error !!!")
 	} else {
 		context.TextAnswer("Note saved!")

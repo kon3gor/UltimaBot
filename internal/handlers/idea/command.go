@@ -29,14 +29,13 @@ func guarded(context *appcontext.Context) {
 
 // todo: need to do a little drill down here to get all ideas
 func selectIdea() string {
-	client := &http.Client{}
 	req := ghclient.NewMyContentRequest("PersonalObsidian", "ideas")
-	result, _ := ghclient.GetContent(client, req)
+	result, _ := ghclient.GetContent(req)
 
 	rand.Seed(time.Now().Unix())
 	index := rand.Intn(len(result))
 
-	res, err := client.Get(result[index].DownloadUrl)
+	res, err := http.Get(result[index].DownloadUrl)
 	if err != nil {
 		return fmt.Sprintf("Error while fetching donwload: %s", err)
 	}

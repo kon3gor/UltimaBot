@@ -2,16 +2,15 @@ package ghclient
 
 import (
 	"io/ioutil"
-	"net/http"
 )
 
-func GetFile(client *http.Client, req ContentRequest) (string, error) {
-	content, err := GetContent(client, req)
+func (c *GithubClient) GetFile(req ContentRequest) (string, error) {
+	content, err := c.GetContent(req)
 	if err != nil {
 		return "", err
 	}
 
-	res, err := client.Get(content[0].DownloadUrl)
+	res, err := c.httpClient.Get(content[0].DownloadUrl)
 	if err != nil {
 		return "", err
 	}
