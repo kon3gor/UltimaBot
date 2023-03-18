@@ -23,12 +23,6 @@ func ProcessCommand(ctx *appcontext.Context) {
 }
 
 func guarded(ctx *appcontext.Context) {
-	connection, err := db.Connect()
-	if err != nil {
-		ctx.SmthWentWrong(err)
-		return
-	}
-
 	text := ctx.RawUpdate.Message.Text
 	_, solid, _ := strings.Cut(text, " ")
 	dailies := strings.Split(solid, "\n")
@@ -36,14 +30,29 @@ func guarded(ctx *appcontext.Context) {
 	if err != nil {
 		panic(err)
 	}
-	saveMyDaily(ctx, dailies[1:], shift)
-	//	for _, daily := range dailies {
-	//		if err = saveDaily(connection, daily); err != nil {
-	//			connection.Release()
-	//			ctx.SmthWentWrong(err)
-	//		}
-	//	}
-	connection.Release()
+
+	if ctx.UserName == "zosuku" {
+		sunhineSave(ctx, dailies, shift)
+	} else if ctx.UserName == "eshendo" {
+		saveMyDaily(ctx, dailies[1:], shift)
+	}
+}
+
+// todo: make use of shift
+func sunhineSave(ctx *appcontext.Context, dailies []string, shift int) {
+	connection, err := db.Connect()
+	if err != nil {
+		ctx.SmthWentWrong(err)
+		return
+	}
+	defer connection.Release()
+
+	for _, daily := range dailies {
+		if err = saveDaily(connection, daily); err != nil {
+			connection.Release()
+			ctx.SmthWentWrong(err)
+		}
+	}
 }
 
 const saveDailyQuery = `

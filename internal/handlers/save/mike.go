@@ -9,11 +9,8 @@ import (
 )
 
 func saveMyDaily(ctx *appcontext.Context, dailies []string, shift int) {
-	daily, err := getExistingFutureDaily(shift)
-	if err != nil {
-		// panic(err)
-	}
-	res := strings.Join(append(dailies, daily), "\n")
+	daily, _ := getExistingFutureDaily(shift)
+	res := fmt.Sprintf("%s\n%s", formatMyDailies(dailies), daily)
 	filePathTemplate := "plans/daily/%s.md"
 	currentDate, err := util.GetDateAsString(shift)
 	if err != nil {
@@ -22,6 +19,7 @@ func saveMyDaily(ctx *appcontext.Context, dailies []string, shift int) {
 	filePath := fmt.Sprintf(filePathTemplate, currentDate)
 	req := ghclient.NewPersonalObsidianRequest(filePath, res)
 	ghclient.PushContent(req)
+	ctx.TextAnswer("Saved")
 }
 
 // todo: I can put it in the ghclient i guess
@@ -36,6 +34,12 @@ func getExistingFutureDaily(shift int) (string, error) {
 	return ghclient.GetFile(req)
 }
 
-func formatMyDailies(dailies []string) {
-
+func formatMyDailies(dailies []string) string {
+	r := strings.Builder{}
+	for _, v := range dailies {
+		r.WriteString("- [ ] ")
+		r.WriteString(v)
+		r.WriteRune('\n')
+	}
+	return r.String()
 }
