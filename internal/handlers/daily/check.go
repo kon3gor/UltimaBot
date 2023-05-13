@@ -4,7 +4,6 @@ import (
 	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/ghclient"
 	"fmt"
-	"net/http"
 	"regexp"
 	"strings"
 
@@ -57,10 +56,9 @@ func pushChangesToGithub(newDaily string) error {
 	if err != nil {
 		return err
 	}
-	client := &http.Client{}
 	path := fmt.Sprintf("plans/daily/%s.md", currentDate)
 	req := ghclient.NewPersonalObsidianRequest(path, newDaily)
-	ghclient.PushContent(client, req)
+	ghclient.PushContent(req)
 	return nil
 }
 
