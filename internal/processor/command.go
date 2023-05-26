@@ -13,6 +13,7 @@ import (
 	"dev/kon3gor/ultima/internal/handlers/save"
 	"dev/kon3gor/ultima/internal/handlers/schedule"
 	"dev/kon3gor/ultima/internal/handlers/spam"
+	"dev/kon3gor/ultima/internal/handlers/todo"
 	"dev/kon3gor/ultima/internal/stickers"
 	"dev/kon3gor/ultima/internal/util"
 	"log"
@@ -45,6 +46,8 @@ func ProcessCommand(context *appcontext.Context) {
 		save.ProcessCommand(context)
 	case edit.Cmd:
 		edit.ProcessCommand(context)
+	case todo.Cmd:
+		todo.ProcessCommand(context)
 	case "echo":
 		r := util.EscapeFakeMarkdown(context.Args)
 		log.Println(r)
