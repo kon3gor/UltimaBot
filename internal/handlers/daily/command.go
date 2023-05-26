@@ -50,7 +50,9 @@ func mineDaily(context *appcontext.Context) {
 	daily := util.EscapeFakeMarkdown(formatDaily(raw_daily))
 	msg := tgbotapi.NewMessage(context.ChatID, daily)
 	msg.ParseMode = "MarkdownV2"
-	msg.ReplyMarkup = createKeyBoardWithLowerBound(count, 0)
+	if context.UserName == eshendo {
+		msg.ReplyMarkup = createKeyBoardWithLowerBound(count, 0)
+	}
 	context.CustomAnswer(msg)
 }
 
