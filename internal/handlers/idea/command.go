@@ -2,7 +2,7 @@ package idea
 
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
-	"dev/kon3gor/ultima/internal/ghclient"
+	"dev/kon3gor/ultima/internal/github"
 	"dev/kon3gor/ultima/internal/guard"
 	"fmt"
 	"io/ioutil"
@@ -29,8 +29,7 @@ func guarded(context *appcontext.Context) {
 
 // todo: need to do a little drill down here to get all ideas
 func selectIdea() string {
-	req := ghclient.NewMyContentRequest("PersonalObsidian", "ideas")
-	result, _ := ghclient.GetContent(req)
+	result, _ := github.GetObsidianFolder("ideas")
 
 	rand.Seed(time.Now().Unix())
 	index := rand.Intn(len(result))

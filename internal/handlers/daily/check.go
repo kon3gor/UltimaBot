@@ -2,7 +2,7 @@ package daily
 
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
-	"dev/kon3gor/ultima/internal/ghclient"
+	"dev/kon3gor/ultima/internal/github"
 	"fmt"
 	"regexp"
 	"strings"
@@ -57,9 +57,7 @@ func pushChangesToGithub(newDaily string) error {
 		return err
 	}
 	path := fmt.Sprintf("plans/daily/%s.md", currentDate)
-	req := ghclient.NewPersonalObsidianRequest(path, newDaily)
-	ghclient.PushContent(req)
-	return nil
+	return github.SaveObisdianFile(path, newDaily)
 }
 
 var numRe *regexp.Regexp = regexp.MustCompile(`\d\. `)

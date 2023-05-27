@@ -2,7 +2,7 @@ package todo
 
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
-	"dev/kon3gor/ultima/internal/ghclient"
+	"dev/kon3gor/ultima/internal/github"
 	"dev/kon3gor/ultima/internal/guard"
 	"fmt"
 )
@@ -21,16 +21,15 @@ func ProcessCommand(ctx *appcontext.Context) {
 	content := getTodoContent()
 
 	content = fmt.Sprintf("%s\n- [ ] %s", content, text)
-	ghclient.PushContent(ghclient.NewPersonalObsidianRequest(todoPath, content))
+	github.SaveObisdianFile(todoPath, content)
 	ctx.TextAnswer("Saved!")
 }
 
 func getTodoContent() string {
-	req := ghclient.NewMyContentRequest("PersonalObsidian", todoPath)
-	res, err := ghclient.Default.GetFile(req)
+	todo, err := github.GetObsidianFile(todoPath)
 	if err != nil {
 		return ""
 	}
 
-	return res
+	return todo
 }

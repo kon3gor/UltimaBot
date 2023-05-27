@@ -1,10 +1,8 @@
 package daily
 
 import (
-	"dev/kon3gor/ultima/internal/ghclient"
+	"dev/kon3gor/ultima/internal/github"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"regexp"
 	"time"
 
@@ -49,22 +47,7 @@ func makeGithubRequest() (string, error) {
 		return "", err
 	}
 	filePath := fmt.Sprintf(filePathTemplate, currentDate)
-	req := ghclient.NewMyContentRequest("PersonalObsidian", filePath)
-	content, _ := ghclient.GetContent(req)
-
-	res, err := http.Get(content[0].DownloadUrl)
-	if err != nil {
-		return "", err
-	}
-
-	defer res.Body.Close()
-
-	bodyBytes, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return "", err
-	}
-
-	return string(bodyBytes), nil
+	return github.GetObsidianFile(filePath)
 }
 
 func getCurrentDate() (string, error) {

@@ -2,7 +2,7 @@ package note
 
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
-	"dev/kon3gor/ultima/internal/ghclient"
+	"dev/kon3gor/ultima/internal/github"
 	"dev/kon3gor/ultima/internal/guard"
 	"fmt"
 	"strings"
@@ -28,8 +28,7 @@ func guarded(context *appcontext.Context) {
 	}
 	title := note[:titleLen-1]
 	path := fmt.Sprintf("notes/junk/%s.md", title)
-	pushReq := ghclient.NewPersonalObsidianRequest(path, note)
-	if err := ghclient.PushContent(pushReq); err != nil {
+	if err := github.SaveObisdianFile(path, note); err != nil {
 		context.TextAnswer("Error !!!")
 	} else {
 		context.TextAnswer("Note saved!")

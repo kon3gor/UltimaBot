@@ -2,7 +2,7 @@ package save
 
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
-	"dev/kon3gor/ultima/internal/ghclient"
+	"dev/kon3gor/ultima/internal/github"
 	"dev/kon3gor/ultima/internal/util"
 	"fmt"
 	"strings"
@@ -17,8 +17,7 @@ func saveMyDaily(ctx *appcontext.Context, dailies []string, shift int) {
 		panic(err)
 	}
 	filePath := fmt.Sprintf(filePathTemplate, currentDate)
-	req := ghclient.NewPersonalObsidianRequest(filePath, res)
-	ghclient.PushContent(req)
+	github.SaveObisdianFile(filePath, res)
 	ctx.TextAnswer("Saved")
 }
 
@@ -30,8 +29,7 @@ func getExistingFutureDaily(shift int) (string, error) {
 		return "", err
 	}
 	filePath := fmt.Sprintf(filePathTemplate, currentDate)
-	req := ghclient.NewMyContentRequest("PersonalObsidian", filePath)
-	return ghclient.GetFile(req)
+	return github.GetObsidianFile(filePath)
 }
 
 func formatMyDailies(dailies []string) string {
