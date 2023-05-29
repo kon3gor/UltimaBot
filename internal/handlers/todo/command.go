@@ -5,6 +5,7 @@ import (
 	"dev/kon3gor/ultima/internal/github"
 	"dev/kon3gor/ultima/internal/guard"
 	"fmt"
+	"strings"
 )
 
 const (
@@ -20,7 +21,7 @@ func ProcessCommand(ctx *appcontext.Context) {
 	text := ctx.Args
 	content := getTodoContent()
 
-	content = fmt.Sprintf("%s\n- [ ] %s", content, text)
+	content = fmt.Sprintf("%s\n- [ ] %s", strings.Trim(content, "\n"), text)
 	github.SaveObisdianFile(todoPath, content)
 	ctx.TextAnswer("Saved!")
 }
