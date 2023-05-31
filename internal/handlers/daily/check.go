@@ -2,7 +2,7 @@ package daily
 
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
-	"dev/kon3gor/ultima/internal/github"
+	"dev/kon3gor/ultima/internal/service/obsidian"
 	"fmt"
 	"regexp"
 	"strings"
@@ -23,7 +23,7 @@ func checkDaily(context *appcontext.Context, at int) {
 	msg.ParseMode = "MarkdownV2"
 	msg.ReplyMarkup = context.RawUpdate.CallbackQuery.Message.ReplyMarkup
 
-	if err := pushChangesToGithub(markedDaily); err != nil {
+	if err := obsidian.ModifyTodaysDaily(markedDaily); err != nil {
 		context.TextAnswer(fmt.Sprint(err))
 	} else {
 		context.CustomAnswer(msg)
@@ -49,15 +49,6 @@ func replaceInTask(at int, daily, from, to string) string {
 	task := daily[indicies[at]:upper]
 	task = strings.ReplaceAll(task, from, to)
 	return daily[:indicies[at]] + task + daily[upper:]
-}
-
-func pushChangesToGithub(newDaily string) error {
-	currentDate, err := getCurrentDate()
-	if err != nil {
-		return err
-	}
-	path := fmt.Sprintf("plans/daily/%s.md", currentDate)
-	return github.SaveObisdianFile(path, newDaily)
 }
 
 var numRe *regexp.Regexp = regexp.MustCompile(`\d\. `)

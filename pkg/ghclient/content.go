@@ -6,7 +6,12 @@ import (
 )
 
 type FileContent struct {
+	Type        string `json:"type"`
 	DownloadUrl string `json:"download_url"`
+}
+
+func (fc FileContent) IsFile() bool {
+	return fc.Type == "file"
 }
 
 type ContentRequest struct {

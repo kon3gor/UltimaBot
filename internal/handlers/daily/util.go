@@ -1,10 +1,8 @@
 package daily
 
 import (
-	"dev/kon3gor/ultima/internal/github"
 	"fmt"
 	"regexp"
-	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -38,26 +36,6 @@ func createKeyBoardWithLowerBound(total, lower int) tgbotapi.InlineKeyboardMarku
 		navbar = append(navbar, tgbotapi.NewInlineKeyboardButtonData(">>", next_data))
 	}
 	return tgbotapi.NewInlineKeyboardMarkup(row, navbar)
-}
-
-func makeGithubRequest() (string, error) {
-	filePathTemplate := "plans/daily/%s.md"
-	currentDate, err := getCurrentDate()
-	if err != nil {
-		return "", err
-	}
-	filePath := fmt.Sprintf(filePathTemplate, currentDate)
-	return github.GetObsidianFile(filePath)
-}
-
-func getCurrentDate() (string, error) {
-	tz, err := time.LoadLocation("Europe/Moscow")
-	if err != nil {
-		return "", err
-	}
-
-	year, month, day := time.Now().In(tz).Date()
-	return fmt.Sprintf("%d-%02d-%02d", year, int(month), day), nil
 }
 
 var re *regexp.Regexp = regexp.MustCompile(`\t*- \[(x| )\]`)

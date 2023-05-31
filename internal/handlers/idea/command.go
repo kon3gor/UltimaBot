@@ -2,8 +2,8 @@ package idea
 
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
-	"dev/kon3gor/ultima/internal/github"
 	"dev/kon3gor/ultima/internal/guard"
+	"dev/kon3gor/ultima/internal/service/obsidian"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -29,12 +29,12 @@ func guarded(context *appcontext.Context) {
 
 // todo: need to do a little drill down here to get all ideas
 func selectIdea() string {
-	result, _ := github.GetObsidianFolder("ideas")
+	result, _ := obsidian.GetIdeaUrls()
 
 	rand.Seed(time.Now().Unix())
 	index := rand.Intn(len(result))
 
-	res, err := http.Get(result[index].DownloadUrl)
+	res, err := http.Get(result[index])
 	if err != nil {
 		return fmt.Sprintf("Error while fetching donwload: %s", err)
 	}

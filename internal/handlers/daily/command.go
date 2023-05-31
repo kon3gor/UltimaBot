@@ -3,6 +3,7 @@ package daily
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/guard"
+	"dev/kon3gor/ultima/internal/service/obsidian"
 	"dev/kon3gor/ultima/internal/util"
 	"fmt"
 	"log"
@@ -40,7 +41,7 @@ func dailyGuarded(context *appcontext.Context) {
 }
 
 func mineDaily(context *appcontext.Context) {
-	raw_daily, err := makeGithubRequest()
+	raw_daily, err := obsidian.TodaysDaily()
 	if err != nil {
 		log.Println(err)
 		context.TextAnswer("Smth went wrong")
