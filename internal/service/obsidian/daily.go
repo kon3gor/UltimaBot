@@ -28,23 +28,6 @@ func ModifyTodaysDaily(content string) error {
 	return github.SaveObisdianFile(path, content)
 }
 
-func GetIdeaUrls() ([]string, error) {
-	raw, err := github.GetObsidianFolder("ideas")
-	if err != nil {
-		return nil, err
-	}
-	ideas := make([]string, 0, len(raw))
-	for _, rawIdea := range raw {
-		if rawIdea.IsFile() {
-			ideas = append(ideas, rawIdea.DownloadUrl)
-		} else {
-			//todo: do drill down here
-		}
-	}
-
-	return ideas, nil
-}
-
 func getCurrentDate() (string, error) {
 	tz, err := time.LoadLocation("Europe/Moscow")
 	if err != nil {

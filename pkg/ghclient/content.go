@@ -8,6 +8,7 @@ import (
 type FileContent struct {
 	Type        string `json:"type"`
 	DownloadUrl string `json:"download_url"`
+	Path        string `json:"path"`
 }
 
 func (fc FileContent) IsFile() bool {

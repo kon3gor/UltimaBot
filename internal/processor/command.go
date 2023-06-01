@@ -9,10 +9,7 @@ import (
 	"dev/kon3gor/ultima/internal/handlers/name"
 	"dev/kon3gor/ultima/internal/handlers/note"
 	"dev/kon3gor/ultima/internal/handlers/pokemon"
-	"dev/kon3gor/ultima/internal/handlers/reminder"
 	"dev/kon3gor/ultima/internal/handlers/save"
-	"dev/kon3gor/ultima/internal/handlers/schedule"
-	"dev/kon3gor/ultima/internal/handlers/spam"
 	"dev/kon3gor/ultima/internal/handlers/todo"
 	"dev/kon3gor/ultima/internal/stickers"
 	"dev/kon3gor/ultima/internal/util"
@@ -26,22 +23,16 @@ func ProcessCommand(context *appcontext.Context) {
 	switch command {
 	case name.Cmd:
 		name.ProcessCommand(context)
-	case spam.Cmd:
-		spam.ProcessCommand(context)
 	case idea.Cmd:
 		idea.ProcessCommand(context)
 	case chatid.Cmd:
 		chatid.ProcessCommand(context)
-	case schedule.Cmd:
-		schedule.ProcessCommand(context)
 	case note.Cmd:
 		note.ProcessCommand(context)
 	case daily.Cmd:
 		daily.ProcessCommand(context)
 	case pokemon.Cmd:
 		pokemon.ProcessCommand(context)
-	case reminder.Cmd:
-		reminder.ProcessCommand(context)
 	case save.Cmd:
 		save.ProcessCommand(context)
 	case edit.Cmd:
