@@ -3,7 +3,7 @@ package processor
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/guard"
-	"dev/kon3gor/ultima/internal/stickers"
+	"dev/kon3gor/ultima/internal/service/stickers"
 )
 
 func Process(context *appcontext.Context) {

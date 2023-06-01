@@ -1,7 +1,7 @@
 package stickers
 
 import (
-	"dev/kon3gor/ultima/internal/db"
+	"dev/kon3gor/ultima/internal/service/db"
 	"log"
 
 	"github.com/ydb-platform/ydb-go-sdk/v3/table"

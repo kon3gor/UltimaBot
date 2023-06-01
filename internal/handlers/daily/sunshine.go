@@ -2,7 +2,7 @@ package daily
 
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
-	"dev/kon3gor/ultima/internal/db"
+	"dev/kon3gor/ultima/internal/service/db"
 	"dev/kon3gor/ultima/internal/util"
 	"fmt"
 	"log"

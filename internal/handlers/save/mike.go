@@ -2,7 +2,7 @@ package save
 
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
-	"dev/kon3gor/ultima/internal/github"
+	"dev/kon3gor/ultima/internal/service/github"
 	"dev/kon3gor/ultima/internal/util"
 	"fmt"
 	"strings"

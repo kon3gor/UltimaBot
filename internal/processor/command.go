@@ -11,7 +11,7 @@ import (
 	"dev/kon3gor/ultima/internal/handlers/pokemon"
 	"dev/kon3gor/ultima/internal/handlers/save"
 	"dev/kon3gor/ultima/internal/handlers/todo"
-	"dev/kon3gor/ultima/internal/stickers"
+	"dev/kon3gor/ultima/internal/service/stickers"
 	"dev/kon3gor/ultima/internal/util"
 	"log"
 	"strings"

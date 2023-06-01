@@ -1,7 +1,7 @@
 package obsidian
 
 import (
-	"dev/kon3gor/ultima/internal/github"
+	"dev/kon3gor/ultima/internal/service/github"
 )
 
 func GetIdeaUrls() ([]string, error) {

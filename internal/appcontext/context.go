@@ -1,7 +1,6 @@
 package appcontext
 
 import (
-	"dev/kon3gor/ultima/internal/fsm"
 	"dev/kon3gor/ultima/internal/guard"
 	"log"
 	"time"
@@ -13,7 +12,6 @@ type Context struct {
 	UserName  string
 	ChatID    int64
 	RawUpdate tgbotapi.Update
-	State     *fsm.State
 	Args      string
 
 	bot *tgbotapi.BotAPI
@@ -22,21 +20,19 @@ type Context struct {
 func CreateFromCommand(update tgbotapi.Update, bot *tgbotapi.BotAPI) *Context {
 	chatId := update.Message.Chat.ID
 	username := update.Message.From.UserName
-	state := fsm.StateStore.GetOrCreateState(chatId)
 	args := update.Message.CommandArguments()
-	return &Context{username, chatId, update, state, args, bot}
+	return &Context{username, chatId, update, args, bot}
 }
 
 func CreateFromCallback(update tgbotapi.Update, bot *tgbotapi.BotAPI) *Context {
 	chatId := update.CallbackQuery.Message.Chat.ID
 	username := update.CallbackQuery.Message.From.UserName
-	state := fsm.StateStore.GetOrCreateState(chatId)
-	return &Context{username, chatId, update, state, "", bot}
+	return &Context{username, chatId, update, "", bot}
 }
 
 func CreateFromInlineQuery(update tgbotapi.Update, bot *tgbotapi.BotAPI) *Context {
 	username := update.InlineQuery.From.UserName
-	return &Context{username, -1, update, nil, "", bot}
+	return &Context{username, -1, update, "", bot}
 }
 
 func (self *Context) SmthWentWrong(err error) {

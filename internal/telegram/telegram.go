@@ -3,7 +3,7 @@ package telegram
 import (
 	"dev/kon3gor/ultima/internal/appcontext"
 	"dev/kon3gor/ultima/internal/processor"
-	"dev/kon3gor/ultima/internal/stickers"
+	"dev/kon3gor/ultima/internal/service/stickers"
 	"fmt"
 	"os"
 
